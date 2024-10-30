@@ -82,7 +82,7 @@ defmodule AmboseliWeb do
     quote do
       # HTML escaping functionality
       import Phoenix.HTML
-      use Gettext, backend: AmboseliWeb.CoreComponents
+      import AmboseliWeb.CoreComponents
       use Gettext, backend: AmboseliWeb.Gettext
 
       # Shortcut for generating JS commands
