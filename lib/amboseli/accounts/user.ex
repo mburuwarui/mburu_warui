@@ -57,12 +57,8 @@ defmodule Amboseli.Accounts.User do
       authorize_if always()
     end
 
-    policy action_type(:read) do
-      authorize_if always()
-    end
-
-    policy action_type(:create) do
-      authorize_if always()
+    policy always() do
+      forbid_if always()
     end
   end
 

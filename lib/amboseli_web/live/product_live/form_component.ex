@@ -17,11 +17,8 @@ defmodule AmboseliWeb.ProductLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:description]} type="text" label="Description" /><.input
-          field={@form[:title]}
-          type="text"
-          label="Title"
-        />
+        <.input field={@form[:title]} type="text" label="Title" />
+        <.input field={@form[:description]} type="text" label="Description" />
 
         <:actions>
           <.button phx-disable-with="Saving...">Save Product</.button>
@@ -67,11 +64,14 @@ defmodule AmboseliWeb.ProductLive.FormComponent do
   defp assign_form(%{assigns: %{product: product}} = socket) do
     form =
       if product do
-        AshPhoenix.Form.for_update(product, :update, as: "product", actor: socket.assigns.y)
+        AshPhoenix.Form.for_update(product, :update,
+          as: "product",
+          actor: socket.assigns.current_user
+        )
       else
         AshPhoenix.Form.for_create(Amboseli.Catalog.Product, :create,
           as: "product",
-          actor: socket.assigns.y
+          actor: socket.assigns.current_user
         )
       end
 

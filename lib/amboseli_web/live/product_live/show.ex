@@ -38,7 +38,7 @@ defmodule AmboseliWeb.ProductLive.Show do
         id={@product.id}
         title={@page_title}
         action={@live_action}
-        y={@y}
+        current_user={@current_user}
         product={@product}
         patch={~p"/products/#{@product}"}
       />
@@ -56,7 +56,10 @@ defmodule AmboseliWeb.ProductLive.Show do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:product, Ash.get!(Amboseli.Catalog.Product, id, actor: socket.assigns.y))}
+     |> assign(
+       :product,
+       Ash.get!(Amboseli.Catalog.Product, id, actor: socket.assigns.current_user)
+     )}
   end
 
   defp page_title(:show), do: "Show Product"

@@ -20,9 +20,9 @@ defmodule AmboseliWeb.ProductLive.Index do
     >
       <:col :let={{_id, product}} label="Id"><%= product.id %></:col>
 
-      <:col :let={{_id, product}} label="Description"><%= product.description %></:col>
-
       <:col :let={{_id, product}} label="Title"><%= product.title %></:col>
+
+      <:col :let={{_id, product}} label="Description"><%= product.description %></:col>
 
       <:col :let={{_id, product}} label="User"><%= product.user_id %></:col>
 
@@ -54,7 +54,7 @@ defmodule AmboseliWeb.ProductLive.Index do
         module={AmboseliWeb.ProductLive.FormComponent}
         id={(@product && @product.id) || :new}
         title={@page_title}
-        y={@y}
+        current_user={@current_user}
         action={@live_action}
         product={@product}
         patch={~p"/products"}
@@ -67,8 +67,11 @@ defmodule AmboseliWeb.ProductLive.Index do
   def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> stream(:products, Ash.read!(Amboseli.Catalog.Product, actor: socket.assigns[:y]))
-     |> assign_new(:y, fn -> nil end)}
+     |> stream(
+       :products,
+       Ash.read!(Amboseli.Catalog.Product, actor: socket.assigns[:current_user])
+     )
+     |> assign_new(:current_user, fn -> nil end)}
   end
 
   @impl true
@@ -79,7 +82,10 @@ defmodule AmboseliWeb.ProductLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Product")
-    |> assign(:product, Ash.get!(Amboseli.Catalog.Product, id, actor: socket.assigns.y))
+    |> assign(
+      :product,
+      Ash.get!(Amboseli.Catalog.Product, id, actor: socket.assigns.current_user)
+    )
   end
 
   defp apply_action(socket, :new, _params) do
@@ -101,8 +107,8 @@ defmodule AmboseliWeb.ProductLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    product = Ash.get!(Amboseli.Catalog.Product, id, actor: socket.assigns.y)
-    Ash.destroy!(product, actor: socket.assigns.y)
+    product = Ash.get!(Amboseli.Catalog.Product, id, actor: socket.assigns.current_user)
+    Ash.destroy!(product, actor: socket.assigns.current_user)
 
     {:noreply, stream_delete(socket, :products, product)}
   end
