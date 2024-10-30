@@ -42,6 +42,8 @@ defmodule Amboseli.Accounts.User do
   end
 
   actions do
+    defaults [:read, :destroy, create: [], update: []]
+
     read :get_by_subject do
       description "Get a user by the subject claim in a JWT"
       argument :subject, :string, allow_nil?: false
@@ -55,8 +57,12 @@ defmodule Amboseli.Accounts.User do
       authorize_if always()
     end
 
-    policy always() do
-      forbid_if always()
+    policy action_type(:read) do
+      authorize_if always()
+    end
+
+    policy action_type(:create) do
+      authorize_if always()
     end
   end
 
@@ -68,7 +74,7 @@ defmodule Amboseli.Accounts.User do
       public? true
     end
 
-    attribute :hashed_password, :string, allow_nil?: false, sensitive?: true
+    attribute :hashed_password, :string, allow_nil?: true, sensitive?: true
 
     attribute :role, :atom do
       constraints one_of: [:admin, :author, :user]

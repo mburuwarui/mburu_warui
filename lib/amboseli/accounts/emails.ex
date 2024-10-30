@@ -34,9 +34,15 @@ defmodule Amboseli.Accounts.Emails do
       raise "Cannot deliver confirmation instructions without a url"
     end
 
-    deliver(user.email, "Confirm your email address", """
+    email =
+      case user do
+        %{email: email} -> email
+        email -> email
+      end
+
+    deliver(email, "Confirm your email address", """
       <p>
-        Hi #{user.email},
+        Hi #{email},
       </p>
 
       <p>
