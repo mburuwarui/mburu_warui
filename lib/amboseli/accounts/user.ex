@@ -86,6 +86,10 @@ defmodule Amboseli.Accounts.User do
     timestamps()
   end
 
+  relationships do
+    has_many :products, Amboseli.Catalog.Product
+  end
+
   identities do
     identity :unique_email, [:email]
   end

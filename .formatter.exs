@@ -1,9 +1,10 @@
 [
   import_deps: [
-    :ash_authentication_phoenix,
-    :ash_authentication,
+    :ash_json_api,
     :ash_graphql,
     :absinthe,
+    :ash_authentication_phoenix,
+    :ash_authentication,
     :ash_postgres,
     :ash,
     :ecto,

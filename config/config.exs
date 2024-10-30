@@ -7,6 +7,10 @@
 # General application configuration
 import Config
 
+config :mime,
+  extensions: %{"json" => "application/vnd.api+json"},
+  types: %{"application/vnd.api+json" => ["json"]}
+
 config :ash,
   include_embedded_source_by_default?: false,
   default_page_type: :keyset,
@@ -17,6 +21,7 @@ config :spark,
     remove_parens?: true,
     "Ash.Resource": [
       section_order: [
+        :json_api,
         :authentication,
         :tokens,
         :graphql,
@@ -38,14 +43,22 @@ config :spark,
       ]
     ],
     "Ash.Domain": [
-      section_order: [:graphql, :resources, :policies, :authorization, :domain, :execution]
+      section_order: [
+        :json_api,
+        :graphql,
+        :resources,
+        :policies,
+        :authorization,
+        :domain,
+        :execution
+      ]
     ]
   ]
 
 config :amboseli,
   ecto_repos: [Amboseli.Repo],
   generators: [timestamp_type: :utc_datetime],
-  ash_domains: [Amboseli.Accounts]
+  ash_domains: [Amboseli.Catalog, Amboseli.Accounts]
 
 # Configures the endpoint
 config :amboseli, AmboseliWeb.Endpoint,

@@ -2,7 +2,7 @@ defmodule AmboseliWeb.GraphqlSchema do
   use Absinthe.Schema
 
   use AshGraphql,
-    domains: []
+    domains: [Amboseli.Catalog]
 
   import_types Absinthe.Plug.Types
 
