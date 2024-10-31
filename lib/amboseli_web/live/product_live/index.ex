@@ -126,7 +126,7 @@ defmodule AmboseliWeb.ProductLive.Index do
         %Phoenix.Socket.Broadcast{topic: "product:updated", payload: payload},
         socket
       ) do
-    {:noreply, stream_insert(socket, :products, payload.data, reset: true, at: 0)}
+    {:noreply, stream_insert(socket, :products, payload.data)}
   end
 
   @impl true
