@@ -19,6 +19,13 @@ defmodule AmboseliWeb.ProductLive.FormComponent do
       >
         <.input field={@form[:title]} type="text" label="Title" />
         <.input field={@form[:description]} type="text" label="Description" />
+        <.input field={@form[:price]} type="number" label="Price" />
+        <.input
+          field={@form[:visibility]}
+          type="select"
+          options={[:public, :private]}
+          label="Visibility"
+        />
 
         <:actions>
           <.button phx-disable-with="Saving...">Save Product</.button>

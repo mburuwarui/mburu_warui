@@ -19,13 +19,13 @@ defmodule AmboseliWeb.ProductLive.Index do
         rows={@streams.products}
         row_click={fn {_id, product} -> JS.navigate(~p"/products/#{product}") end}
       >
-        <:col :let={{_id, product}} label="Id"><%= product.id %></:col>
-
         <:col :let={{_id, product}} label="Title"><%= product.title %></:col>
 
         <:col :let={{_id, product}} label="Description"><%= product.description %></:col>
 
-        <:col :let={{_id, product}} label="User"><%= product.user_id %></:col>
+        <:col :let={{_id, product}} label="Price"><%= product.price %></:col>
+
+        <:col :let={{_id, product}} label="Visibility"><%= product.visibility %></:col>
 
         <:action :let={{_id, product}}>
           <div class="sr-only">
