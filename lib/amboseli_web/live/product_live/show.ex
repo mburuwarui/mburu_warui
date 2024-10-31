@@ -48,6 +48,10 @@ defmodule AmboseliWeb.ProductLive.Show do
 
   @impl true
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      Phoenix.PubSub.subscribe(Amboseli.PubSub, "products:updated")
+    end
+
     {:ok, socket}
   end
 
@@ -60,6 +64,19 @@ defmodule AmboseliWeb.ProductLive.Show do
        :product,
        Ash.get!(Amboseli.Catalog.Product, id, actor: socket.assigns.current_user)
      )}
+  end
+
+  @impl true
+  def handle_info({AmboseliWeb.ProductLive.FormComponent, {:saved, product}}, socket) do
+    {:noreply, assign(socket, :product, product)}
+  end
+
+  @impl true
+  def handle_info(
+        %Phoenix.Socket.Broadcast{topic: "products:updated", payload: payload},
+        socket
+      ) do
+    {:noreply, assign(socket, :product, payload.data)}
   end
 
   defp page_title(:show), do: "Show Product"
