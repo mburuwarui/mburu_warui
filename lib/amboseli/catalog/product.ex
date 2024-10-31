@@ -87,7 +87,7 @@ defmodule Amboseli.Catalog.Product do
 
   pub_sub do
     module AmboseliWeb.Endpoint
-    prefix "product"
+    prefix "products"
     publish_all :create, ["created"]
     publish_all :update, ["updated"]
     publish_all :destroy, ["deleted"]

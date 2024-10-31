@@ -68,9 +68,9 @@ defmodule AmboseliWeb.ProductLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     if connected?(socket) do
-      Phoenix.PubSub.subscribe(Amboseli.PubSub, "product:created")
-      Phoenix.PubSub.subscribe(Amboseli.PubSub, "product:updated")
-      Phoenix.PubSub.subscribe(Amboseli.PubSub, "product:deleted")
+      Phoenix.PubSub.subscribe(Amboseli.PubSub, "products:created")
+      Phoenix.PubSub.subscribe(Amboseli.PubSub, "products:updated")
+      Phoenix.PubSub.subscribe(Amboseli.PubSub, "products:deleted")
     end
 
     {:ok,
@@ -115,7 +115,7 @@ defmodule AmboseliWeb.ProductLive.Index do
 
   @impl true
   def handle_info(
-        %Phoenix.Socket.Broadcast{topic: "product:created", payload: payload},
+        %Phoenix.Socket.Broadcast{topic: "products:created", payload: payload},
         socket
       ) do
     {:noreply, stream_insert(socket, :products, payload.data, at: 0)}
@@ -123,7 +123,7 @@ defmodule AmboseliWeb.ProductLive.Index do
 
   @impl true
   def handle_info(
-        %Phoenix.Socket.Broadcast{topic: "product:updated", payload: payload},
+        %Phoenix.Socket.Broadcast{topic: "products:updated", payload: payload},
         socket
       ) do
     {:noreply, stream_insert(socket, :products, payload.data)}
@@ -131,7 +131,7 @@ defmodule AmboseliWeb.ProductLive.Index do
 
   @impl true
   def handle_info(
-        %Phoenix.Socket.Broadcast{topic: "product:deleted", payload: payload},
+        %Phoenix.Socket.Broadcast{topic: "products:deleted", payload: payload},
         socket
       ) do
     {:noreply, stream_delete(socket, :products, payload.data)}
