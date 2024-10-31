@@ -127,4 +127,9 @@ defmodule Amboseli.Catalog.Product do
       public? true
     end
   end
+
+  calculations do
+    calculate :user_email, :string, expr(user.email)
+  end
 end
+

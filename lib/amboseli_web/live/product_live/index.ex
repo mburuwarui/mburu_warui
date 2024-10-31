@@ -27,6 +27,8 @@ defmodule AmboseliWeb.ProductLive.Index do
 
         <:col :let={{_id, product}} label="Visibility"><%= product.visibility %></:col>
 
+        <:col :let={{_id, product}} label="User"><%= product.user_email %></:col>
+
         <:action :let={{_id, product}}>
           <div class="sr-only">
             <.link navigate={~p"/products/#{product}"}>Show</.link>
@@ -77,7 +79,10 @@ defmodule AmboseliWeb.ProductLive.Index do
      socket
      |> stream(
        :products,
-       Ash.read!(Amboseli.Catalog.Product, actor: socket.assigns[:current_user])
+       Ash.read!(Amboseli.Catalog.Product,
+         actor: socket.assigns[:current_user],
+         load: [:user_email]
+       )
      )
      |> assign_new(:current_user, fn -> nil end)}
   end
@@ -110,7 +115,7 @@ defmodule AmboseliWeb.ProductLive.Index do
 
   @impl true
   def handle_info({AmboseliWeb.ProductLive.FormComponent, {:saved, product}}, socket) do
-    {:noreply, stream_insert(socket, :products, product, at: 0)}
+    {:noreply, stream_insert(socket, :products, product |> Ash.load!(:user_email), at: 0)}
   end
 
   @impl true
@@ -118,7 +123,7 @@ defmodule AmboseliWeb.ProductLive.Index do
         %Phoenix.Socket.Broadcast{topic: "products:created", payload: payload},
         socket
       ) do
-    {:noreply, stream_insert(socket, :products, payload.data, at: 0)}
+    {:noreply, stream_insert(socket, :products, payload.data |> Ash.load!(:user_email), at: 0)}
   end
 
   @impl true
@@ -126,7 +131,7 @@ defmodule AmboseliWeb.ProductLive.Index do
         %Phoenix.Socket.Broadcast{topic: "products:updated", payload: payload},
         socket
       ) do
-    {:noreply, stream_insert(socket, :products, payload.data)}
+    {:noreply, stream_insert(socket, :products, payload.data |> Ash.load!(:user_email))}
   end
 
   @impl true

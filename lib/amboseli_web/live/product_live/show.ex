@@ -23,6 +23,8 @@ defmodule AmboseliWeb.ProductLive.Show do
       <:item title="Price"><%= @product.price %></:item>
 
       <:item title="Visibility"><%= @product.visibility %></:item>
+
+      <:item title="User"><%= @product.user_email %></:item>
     </.list>
 
     <.back navigate={~p"/products"}>Back to products</.back>
@@ -62,13 +64,16 @@ defmodule AmboseliWeb.ProductLive.Show do
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(
        :product,
-       Ash.get!(Amboseli.Catalog.Product, id, actor: socket.assigns.current_user)
+       Ash.get!(Amboseli.Catalog.Product, id,
+         actor: socket.assigns.current_user,
+         load: [:user_email]
+       )
      )}
   end
 
   @impl true
   def handle_info({AmboseliWeb.ProductLive.FormComponent, {:saved, product}}, socket) do
-    {:noreply, assign(socket, :product, product)}
+    {:noreply, assign(socket, :product, product |> Ash.load!(:user_email))}
   end
 
   @impl true
@@ -76,7 +81,7 @@ defmodule AmboseliWeb.ProductLive.Show do
         %Phoenix.Socket.Broadcast{topic: "products:updated", payload: payload},
         socket
       ) do
-    {:noreply, assign(socket, :product, payload.data)}
+    {:noreply, assign(socket, :product, payload.data |> Ash.load!(:user_email))}
   end
 
   defp page_title(:show), do: "Show Product"
