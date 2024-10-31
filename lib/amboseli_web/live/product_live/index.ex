@@ -67,6 +67,12 @@ defmodule AmboseliWeb.ProductLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      Phoenix.PubSub.subscribe(Amboseli.PubSub, "product:created")
+      Phoenix.PubSub.subscribe(Amboseli.PubSub, "product:updated")
+      Phoenix.PubSub.subscribe(Amboseli.PubSub, "product:deleted")
+    end
+
     {:ok,
      socket
      |> stream(
@@ -104,7 +110,31 @@ defmodule AmboseliWeb.ProductLive.Index do
 
   @impl true
   def handle_info({AmboseliWeb.ProductLive.FormComponent, {:saved, product}}, socket) do
-    {:noreply, stream_insert(socket, :products, product)}
+    {:noreply, stream_insert(socket, :products, product, at: 0)}
+  end
+
+  @impl true
+  def handle_info(
+        %Phoenix.Socket.Broadcast{topic: "product:created", payload: payload},
+        socket
+      ) do
+    {:noreply, stream_insert(socket, :products, payload.data, at: 0)}
+  end
+
+  @impl true
+  def handle_info(
+        %Phoenix.Socket.Broadcast{topic: "product:updated", payload: payload},
+        socket
+      ) do
+    {:noreply, stream_insert(socket, :products, payload.data, reset: true, at: 0)}
+  end
+
+  @impl true
+  def handle_info(
+        %Phoenix.Socket.Broadcast{topic: "product:deleted", payload: payload},
+        socket
+      ) do
+    {:noreply, stream_delete(socket, :products, payload.data)}
   end
 
   @impl true

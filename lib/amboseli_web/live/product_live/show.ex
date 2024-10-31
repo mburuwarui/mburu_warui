@@ -16,13 +16,13 @@ defmodule AmboseliWeb.ProductLive.Show do
     </.header>
 
     <.list>
-      <:item title="Id"><%= @product.id %></:item>
+      <:item title="Title"><%= @product.title %></:item>
 
       <:item title="Description"><%= @product.description %></:item>
 
-      <:item title="Title"><%= @product.title %></:item>
+      <:item title="Price"><%= @product.price %></:item>
 
-      <:item title="User"><%= @product.user_id %></:item>
+      <:item title="Visibility"><%= @product.visibility %></:item>
     </.list>
 
     <.back navigate={~p"/products"}>Back to products</.back>

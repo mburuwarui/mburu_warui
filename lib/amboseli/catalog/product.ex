@@ -4,7 +4,8 @@ defmodule Amboseli.Catalog.Product do
     domain: Amboseli.Catalog,
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshGraphql.Resource, AshJsonApi.Resource, Ash.Notifier.PubSub]
+    extensions: [AshGraphql.Resource, AshJsonApi.Resource],
+    notifiers: [Ash.Notifier.PubSub]
 
   json_api do
     type "product"
@@ -88,6 +89,8 @@ defmodule Amboseli.Catalog.Product do
     module AmboseliWeb.Endpoint
     prefix "product"
     publish_all :create, ["created"]
+    publish_all :update, ["updated"]
+    publish_all :destroy, ["deleted"]
   end
 
   attributes do
