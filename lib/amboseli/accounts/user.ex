@@ -42,7 +42,7 @@ defmodule Amboseli.Accounts.User do
   end
 
   actions do
-    defaults [:read, :destroy, create: [], update: []]
+    defaults [:read, :destroy, create: [], update: [:email, :role]]
 
     read :get_by_subject do
       description "Get a user by the subject claim in a JWT"
@@ -57,8 +57,12 @@ defmodule Amboseli.Accounts.User do
       authorize_if always()
     end
 
-    policy always() do
-      forbid_if always()
+    # policy always() do
+    #   forbid_if always()
+    # end
+
+    policy action_type([:create, :update]) do
+      authorize_if expr(id == ^actor(:id))
     end
   end
 
