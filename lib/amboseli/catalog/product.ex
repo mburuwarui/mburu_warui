@@ -43,20 +43,12 @@ defmodule Amboseli.Catalog.Product do
       primary? true
       accept [:title, :description, :price, :visibility]
 
-      validate string_length(:title, min: 3, max: 255)
-      validate string_length(:description, min: 3, max: 255)
-      validate numericality(:price, greater_than: 0)
-
       change relate_actor(:user)
     end
 
     update :update do
       primary? true
       accept [:title, :description, :price, :visibility]
-
-      validate string_length(:title, min: 3, max: 255)
-      validate string_length(:description, min: 3, max: 255)
-      validate numericality(:price, greater_than: 0)
     end
   end
 
@@ -91,6 +83,12 @@ defmodule Amboseli.Catalog.Product do
     publish_all :create, ["created"]
     publish_all :update, ["updated"]
     publish_all :destroy, ["deleted"]
+  end
+
+  validations do
+    validate string_length(:title, min: 3, max: 255)
+    validate string_length(:description, min: 3, max: 255)
+    validate numericality(:price, greater_than: 0)
   end
 
   attributes do

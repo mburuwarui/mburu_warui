@@ -27,4 +27,32 @@ user = List.first(user)
 changeset = Ash.Changeset.new(user) |> Ash.Changeset.for_update(:update, %{role: :author})
 
 Ash.update!(changeset, authorize?: false)
+
+
+```
+
+## iex bulk create products
+
+```elixir
+{:ok, user} = Ash.get!(Amboseli.Accounts.User, %{email: "mburu@warui.cc"}, authorize?: false)
+
+Ash.bulk_create!(
+  [
+    %{
+      title: "Product 1",
+      description: "Product 1 description",
+      price: 100,
+      visibility: :public,
+    },
+    %{
+      title: "Product 2",
+      description: "Product 2 description",
+      price: 200,
+      visibility: :public,
+    }
+  ],
+  :create,
+  actor: user,
+  notify?: true
+)
 ```
