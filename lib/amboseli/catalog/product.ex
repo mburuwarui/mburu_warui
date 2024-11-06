@@ -34,6 +34,7 @@ defmodule Amboseli.Catalog.Product do
     define :create
     define :read
     define :update
+    define :list_public
   end
 
   actions do
@@ -49,6 +50,10 @@ defmodule Amboseli.Catalog.Product do
     update :update do
       primary? true
       accept [:title, :description, :price, :visibility]
+    end
+
+    read :list_public do
+      prepare build(sort: [inserted_at: :desc], filter: expr(visibility == :public))
     end
   end
 
@@ -132,4 +137,3 @@ defmodule Amboseli.Catalog.Product do
     calculate :user_email, :string, expr(user.email)
   end
 end
-

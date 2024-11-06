@@ -77,13 +77,7 @@ defmodule AmboseliWeb.ProductLive.Index do
 
     {:ok,
      socket
-     |> stream(
-       :products,
-       Ash.read!(Amboseli.Catalog.Product,
-         actor: socket.assigns[:current_user],
-         load: [:user_email]
-       )
-     )
+     |> stream(:products, [])
      |> assign_new(:current_user, fn -> nil end)}
   end
 
@@ -108,9 +102,16 @@ defmodule AmboseliWeb.ProductLive.Index do
   end
 
   defp apply_action(socket, :index, _params) do
+    products =
+      Amboseli.Catalog.Product.list_public!(
+        actor: socket.assigns[:current_user],
+        load: [:user_email]
+      )
+
     socket
     |> assign(:page_title, "Listing Products")
     |> assign(:product, nil)
+    |> stream(:products, products)
   end
 
   @impl true
