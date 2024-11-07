@@ -116,7 +116,13 @@ defmodule AmboseliWeb.ProductLive.Index do
 
   @impl true
   def handle_info({AmboseliWeb.ProductLive.FormComponent, {:saved, product}}, socket) do
-    {:noreply, stream_insert(socket, :products, product |> Ash.load!(:user_email), at: 0)}
+    case product.visibility do
+      :public ->
+        {:noreply, stream_insert(socket, :products, product |> Ash.load!(:user_email), at: 0)}
+
+      :private ->
+        {:noreply, socket}
+    end
   end
 
   @impl true
@@ -162,6 +168,9 @@ defmodule AmboseliWeb.ProductLive.Index do
     product = Ash.get!(Amboseli.Catalog.Product, id, actor: socket.assigns.current_user)
     Ash.destroy!(product, actor: socket.assigns.current_user)
 
-    {:noreply, stream_delete(socket, :products, product)}
+    {:noreply,
+     socket
+     |> stream_delete(:products, product)
+     |> put_flash(:info, "Product deleted successfully")}
   end
 end
