@@ -52,8 +52,12 @@ defmodule Amboseli.Catalog.Product do
       accept [:title, :description, :price, :visibility]
     end
 
+    update :public_update do
+      accept [:visibility]
+    end
+
     read :list_public do
-      prepare build(sort: [inserted_at: :desc], filter: expr(visibility == :public))
+      prepare build(sort: [updated_at: :desc], filter: expr(visibility == :public))
     end
   end
 
@@ -119,7 +123,7 @@ defmodule Amboseli.Catalog.Product do
 
     attribute :visibility, :atom do
       constraints one_of: [:public, :private]
-      default :public
+      # default :public
       public? true
       description "Visibility setting for the product"
     end
