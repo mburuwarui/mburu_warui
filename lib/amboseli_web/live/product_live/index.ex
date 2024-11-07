@@ -124,7 +124,14 @@ defmodule AmboseliWeb.ProductLive.Index do
         %Phoenix.Socket.Broadcast{topic: "products:created", payload: payload},
         socket
       ) do
-    {:noreply, stream_insert(socket, :products, payload.data |> Ash.load!(:user_email), at: 0)}
+    case payload.data.visibility do
+      :public ->
+        {:noreply,
+         stream_insert(socket, :products, payload.data |> Ash.load!(:user_email), at: 0)}
+
+      :private ->
+        {:noreply, socket}
+    end
   end
 
   @impl true
