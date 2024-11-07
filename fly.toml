@@ -15,6 +15,7 @@ kill_signal = 'SIGTERM'
 [env]
   PHX_HOST = 'amboseli.fly.dev'
   PORT = '8080'
+  RELEASE_COOKIE = 'IbXm3tipCiqA9QMEgqPdsBwNmajthJBbJu1rsB5m-nvoXQW0-trUXg=='
 
 [http_service]
   internal_port = 8080
