@@ -123,7 +123,6 @@ defmodule Amboseli.Catalog.Product do
 
     attribute :visibility, :atom do
       constraints one_of: [:public, :private]
-      # default :public
       public? true
       description "Visibility setting for the product"
     end
