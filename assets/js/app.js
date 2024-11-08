@@ -84,8 +84,11 @@ window.addEventListener("DOMContentLoaded", () => {
     const headerHeight = header.offsetHeight;
     const scrollPosition = window.pageYOffset;
 
+    // Check if dark mode is enabled
+    const isDarkMode = darkExpected();
+
     if (scrollPosition >= headerHeight) {
-      if (darkExpected()) {
+      if (isDarkMode) {
         header.classList.remove("bg-indigo-900");
         header.classList.add("bg-transparent");
       } else {
@@ -93,7 +96,7 @@ window.addEventListener("DOMContentLoaded", () => {
         header.classList.add("bg-transparent");
       }
     } else {
-      if (darkExpected()) {
+      if (isDarkMode) {
         header.classList.remove("bg-transparent");
         header.classList.add("bg-indigo-900");
       } else {
