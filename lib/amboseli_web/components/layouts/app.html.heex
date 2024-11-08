@@ -1,5 +1,5 @@
-<header class="px-4 sm:px-6 lg:px-8 sticky top-0 backdrop-blur-md z-10">
-  <div class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm dark:border-zinc-800">
+<header class="px-4 sm:px-6 lg:px-8 sticky top-0 backdrop-blur-md z-10 bg-indigo-500">
+  <div class="flex items-center justify-between border-b border-none py-3 text-sm dark:border-zinc-800">
     <div class="flex items-center gap-4">
       <a href="/">
         <img src={~p"/images/logo.jpg"} width="36" class="rounded-full" />
@@ -52,7 +52,7 @@
     </div>
   </div>
 </header>
-<main class="px-4 py-20 sm:px-6 lg:px-8">
+<main class="">
   <div class="mx-auto">
     <.flash_group flash={@flash} />
     <%= @inner_content %>

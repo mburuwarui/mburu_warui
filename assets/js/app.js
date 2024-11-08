@@ -77,10 +77,46 @@ function initDarkMode() {
     document.getElementById("icon").classList.remove("sun-icon");
   }
 }
+// Header Scroll effect
+window.addEventListener("DOMContentLoaded", () => {
+  window.addEventListener("scroll", function () {
+    const header = document.querySelector("header");
+    const headerHeight = header.offsetHeight;
+    const scrollPosition = window.pageYOffset;
+
+    if (scrollPosition >= headerHeight) {
+      if (darkExpected()) {
+        header.classList.remove("bg-indigo-900");
+        header.classList.add("bg-transparent");
+      } else {
+        header.classList.remove("bg-indigo-500");
+        header.classList.add("bg-transparent");
+      }
+    } else {
+      if (darkExpected()) {
+        header.classList.remove("bg-transparent");
+        header.classList.add("bg-indigo-900");
+      } else {
+        header.classList.remove("bg-transparent");
+        header.classList.add("bg-indigo-500");
+      }
+    }
+  });
+});
 
 window.addEventListener("toggle-darkmode", (e) => {
-  if (darkExpected()) localStorage.theme = "light";
-  else localStorage.theme = "dark";
+  const header = document.querySelector("header");
+
+  if (darkExpected()) {
+    header.classList.remove("bg-indigo-900");
+    header.classList.add("bg-indigo-500");
+    localStorage.theme = "light";
+  } else {
+    header.classList.remove("bg-indigo-500");
+    header.classList.add("bg-indigo-900");
+    localStorage.theme = "dark";
+  }
+
   initDarkMode();
 });
 
