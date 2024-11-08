@@ -23,6 +23,22 @@
       <a href="https://huggingface.co/Joste" class="flex items-center hover:text-yellow-700">
         <img src="/images/hugging_face.svg" class="mr-2 h-5 w-5" />
       </a>
+      <button
+        type="button"
+        class="flex items-center hover:text-yellow-700"
+        phx-click={JS.dispatch("toggle-darkmode")}
+      >
+        <svg
+          id="theme-toggle-dark-icon"
+          class="w-5 h-5 text-transparent"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path id="icon" d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z">
+          </path>
+        </svg>
+        <span class="sr-only">Toggle theme</span>
+      </button>
       <%= if assigns[:current_user] do %>
         <.link
           navigate={~p"/sign-out"}

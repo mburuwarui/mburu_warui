@@ -11,8 +11,11 @@ defmodule AmboseliWeb.AuthOverrides do
 
   override AshAuthentication.Phoenix.Components.Banner do
     set :image_url, "/images/logo.jpg"
+    set :dark_image_url, "/images/logo.jpg"
     set :text_class, "bg-red-500"
     set :image_class, "rounded-full h-32 w-32"
+    set :dark_image_class, "rounded-full h-32 w-32"
+    set :root_class, "p-4 flex justify-center items-center"
   end
 
   # override AshAuthentication.Phoenix.Components.SignIn do

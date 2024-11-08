@@ -3,3 +3,11 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+
+.sun-icon {
+  fill: white;
+}
+
+.light-mode .sun-icon {
+  fill: initial;
+}

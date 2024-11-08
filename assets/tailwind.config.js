@@ -12,6 +12,8 @@ module.exports = {
     "../lib/amboseli_web/**/*.*ex",
     "../deps/ash_authentication_phoenix/**/*.*ex",
   ],
+
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
