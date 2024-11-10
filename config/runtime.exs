@@ -48,10 +48,13 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST") || "example.com"
+  host = System.get_env("PHX_HOST") || "warui.cc"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
   config :amboseli, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
+
+  config :amboseli,
+    canonical_host: host
 
   config :amboseli, AmboseliWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
@@ -97,7 +100,11 @@ if config_env() == :prod do
   # We also recommend setting `force_ssl` in your config/prod.exs,
   # ensuring no data is ever sent via http, always redirecting to https:
   #
-  # config :amboseli, AmboseliWeb.Endpoint, force_ssl: [hsts: true]
+  config :amboseli, AmboseliWeb.Endpoint,
+    force_ssl: [
+      hsts: true
+    ]
+
   #
   # Check `Plug.SSL` for all available options in `force_ssl`.
 

@@ -13,7 +13,7 @@ kill_signal = 'SIGTERM'
   release_command = '/app/bin/migrate'
 
 [env]
-  PHX_HOST = 'amboseli.fly.dev'
+  PHX_HOST = 'warui.cc'
   PORT = '8080'
   RELEASE_COOKIE = 'IbXm3tipCiqA9QMEgqPdsBwNmajthJBbJu1rsB5m-nvoXQW0-trUXg=='
 

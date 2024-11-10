@@ -15,6 +15,8 @@ defmodule AmboseliWeb.Endpoint do
     websocket: [connect_info: [session: @session_options]],
     longpoll: [connect_info: [session: @session_options]]
 
+  plug(:canonical_host)
+
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phx.digest
@@ -50,4 +52,9 @@ defmodule AmboseliWeb.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
   plug AmboseliWeb.Router
+
+  defp canonical_host(conn, _opts) do
+    opts = PlugCanonicalHost.init(canonical_host: Application.get_env(:amboseli, :canonical_host))
+    PlugCanonicalHost.call(conn, opts)
+  end
 end

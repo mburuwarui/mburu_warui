@@ -63,6 +63,7 @@ config :amboseli,
 # Configures the endpoint
 config :amboseli, AmboseliWeb.Endpoint,
   url: [host: "localhost"],
+  check_origin: ["https://warui.cc", "https://amboseli.fly.dev"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
     formats: [html: AmboseliWeb.ErrorHTML, json: AmboseliWeb.ErrorJSON],
