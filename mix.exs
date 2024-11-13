@@ -72,7 +72,10 @@ defmodule Amboseli.MixProject do
       {:plug_canonical_host, "~> 2.0"},
       {:salad_ui, "~> 0.13.1", only: [:dev]},
       {:tails, "~> 0.1.11"},
-      {:file_system, "~> 1.0", only: :dev}
+      {:file_system, "~> 1.0", only: :dev},
+      {:ex_aws, "~> 2.5"},
+      {:ex_aws_s3, "~> 2.5"},
+      {:aws_signature, "~> 0.3.2"}
     ]
   end
 
