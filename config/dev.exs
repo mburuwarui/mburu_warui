@@ -26,7 +26,8 @@ config :amboseli, AmboseliWeb.Endpoint,
   secret_key_base: "BeROVu/Cz3ADUmp2WdUbVN+k9LySxE0+O7d/Ex2cEocIRNbjhm0T4kI52eJljrTO",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:amboseli, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:amboseli, ~w(--watch)]}
+    tailwind: {Tailwind, :install_and_run, [:amboseli, ~w(--watch)]},
+    gleam: {GleamBuilder, :start_link, []}
   ]
 
 # ## SSL Support
@@ -86,3 +87,6 @@ config :swoosh, :api_client, false
 
 # Display debug information on all PubSub events 
 config :ash, :pub_sub, debug?: true
+
+# Path to install SaladUI components
+config :salad_ui, components_path: Path.join(File.cwd!(), "lib/amboseli_web/components")

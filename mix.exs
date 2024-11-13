@@ -69,7 +69,10 @@ defmodule Amboseli.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.2"},
       {:hackney, "~> 1.20"},
-      {:plug_canonical_host, "~> 2.0"}
+      {:plug_canonical_host, "~> 2.0"},
+      {:salad_ui, "~> 0.13.1", only: [:dev]},
+      {:tails, "~> 0.1.11"},
+      {:file_system, "~> 1.0", only: :dev}
     ]
   end
 

@@ -21,12 +21,16 @@ import "phoenix_html";
 import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
+import Hooks from "../hooks";
+import Uploaders from "./uploaders";
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
 let liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
+  hooks: Hooks,
+  uploaders: Uploaders,
   params: { _csrf_token: csrfToken },
 });
 
@@ -124,3 +128,10 @@ window.addEventListener("toggle-darkmode", (e) => {
 });
 
 initDarkMode();
+
+// Allows to execute JS commands from the server
+window.addEventListener("phx:js-exec", ({ detail }) => {
+  document.querySelectorAll(detail.to).forEach((el) => {
+    liveSocket.execJS(el, el.getAttribute(detail.attr));
+  });
+});
