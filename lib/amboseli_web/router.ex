@@ -15,6 +15,7 @@ defmodule AmboseliWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :load_from_session
+    plug AmboseliWeb.ReturnToPlug
   end
 
   pipeline :api do
@@ -25,7 +26,10 @@ defmodule AmboseliWeb.Router do
   scope "/", AmboseliWeb do
     pipe_through :browser
 
-    ash_authentication_live_session :authenticated_routes do
+    ash_authentication_live_session :authenticated_routes,
+      on_mount: [
+        {AmboseliWeb.SaveRequestUri, :save_request_uri}
+      ] do
       # in each liveview, add one of the following at the top of the module:
       #
       # If an authenticated user must be present:
