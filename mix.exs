@@ -60,6 +60,7 @@ defmodule Amboseli.MixProject do
        app: false,
        compile: false,
        depth: 1},
+      {:lucide_icons, "~> 1.1"},
       {:swoosh, "~> 1.5"},
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 1.0"},
