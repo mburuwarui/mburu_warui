@@ -88,6 +88,10 @@ defmodule Amboseli.Accounts.User do
 
   relationships do
     has_many :products, Amboseli.Catalog.Product
+    has_many :posts, Amboseli.Blog.Post
+    has_many :comments, Amboseli.Blog.Comment
+    has_many :likes, Amboseli.Blog.Like
+    has_many :bookmarks, Amboseli.Blog.Bookmark
   end
 
   identities do

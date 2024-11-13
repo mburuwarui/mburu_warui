@@ -58,7 +58,7 @@ config :spark,
 config :amboseli,
   ecto_repos: [Amboseli.Repo],
   generators: [timestamp_type: :utc_datetime],
-  ash_domains: [Amboseli.Catalog, Amboseli.Accounts]
+  ash_domains: [Amboseli.Catalog, Amboseli.Accounts, Amboseli.Blog]
 
 # Configures the endpoint
 config :amboseli, AmboseliWeb.Endpoint,
