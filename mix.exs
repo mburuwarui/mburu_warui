@@ -76,7 +76,10 @@ defmodule Amboseli.MixProject do
       {:file_system, "~> 1.0", only: :dev},
       {:ex_aws, "~> 2.5"},
       {:ex_aws_s3, "~> 2.5"},
-      {:aws_signature, "~> 0.3.2"}
+      {:aws_signature, "~> 0.3.2"},
+      {:nanoid, "~> 2.1"},
+      {:mdex, "~> 0.2.0"},
+      {:httpoison, "~> 2.2"}
     ]
   end
 
