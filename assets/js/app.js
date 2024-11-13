@@ -89,19 +89,19 @@ window.addEventListener("DOMContentLoaded", () => {
 
     if (scrollPosition >= headerHeight) {
       if (isDarkMode) {
-        header.classList.remove("bg-indigo-900");
+        header.classList.remove("bg-zinc-800");
         header.classList.add("bg-transparent");
       } else {
-        header.classList.remove("bg-indigo-500");
+        header.classList.remove("bg-zinc-500");
         header.classList.add("bg-transparent");
       }
     } else {
       if (isDarkMode) {
         header.classList.remove("bg-transparent");
-        header.classList.add("bg-indigo-900");
+        header.classList.add("bg-zinc-800");
       } else {
         header.classList.remove("bg-transparent");
-        header.classList.add("bg-indigo-500");
+        header.classList.add("bg-zinc-500");
       }
     }
   });
@@ -111,12 +111,12 @@ window.addEventListener("toggle-darkmode", (e) => {
   const header = document.querySelector("header");
 
   if (darkExpected()) {
-    header.classList.remove("bg-indigo-900");
-    header.classList.add("bg-indigo-500");
+    header.classList.remove("bg-zinc-800");
+    header.classList.add("bg-zinc-500");
     localStorage.theme = "light";
   } else {
-    header.classList.remove("bg-indigo-500");
-    header.classList.add("bg-indigo-900");
+    header.classList.remove("bg-zinc-500");
+    header.classList.add("bg-zinc-800");
     localStorage.theme = "dark";
   }
 

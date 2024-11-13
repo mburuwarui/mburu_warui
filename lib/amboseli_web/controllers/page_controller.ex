@@ -50,42 +50,48 @@ defmodule AmboseliWeb.PageController do
           "https://cdn.dribbble.com/users/1644453/screenshots/17056773/media/00509f74e765da294440886db976943a.png?compress=1&resize=1000x750&vertical=top",
         title: "In-Game Economies and Trading Systems",
         description:
-          "Design and development of in-game economies, player-to-player trading systems, and virtual asset exchanges for gaming marketplaces."
+          "Design and development of in-game economies, player-to-player trading systems, and virtual asset exchanges for gaming marketplaces.",
+        link: "#"
       },
       %{
         image:
           "https://cdn.dribbble.com/userupload/3233220/file/original-e80767b5947df65a0f1ab4dab4964679.png?compress=1&resize=1024x768",
         title: "Multi-Program Loyalty and Rewards Systems",
         description:
-          "Design and development of loyalty and rewards systems with multi-program support, real-time points balance updates, and automated reward distributions."
+          "Design and development of loyalty and rewards systems with multi-program support, real-time points balance updates, and automated reward distributions.",
+        link: "#"
       },
       %{
         image:
           "https://cdn.dribbble.com/users/1644453/screenshots/14748860/media/25f53296059b741ac1c083be9f41745b.png?compress=1&resize=1000x750&vertical=top",
         title: "Department-Wise Budget Tracking and Financial Allocation",
         description:
-          "Design and development of enterprise resource management systems with department-wise budget tracking, project-based financial allocation, and real-time expense monitoring."
+          "Design and development of enterprise resource management systems with department-wise budget tracking, project-based financial allocation, and real-time expense monitoring.",
+        link: "#"
       },
       %{
         image:
           "https://cdn.dribbble.com/users/878428/screenshots/17307425/media/01782a518148ce7ef2e790473c888b1f.png?compress=1&resize=1000x750&vertical=top",
         title: "Escrow Account Management and Split Payments",
         description:
-          "Design and development of marketplace payment systems with escrow account management, split payments, multi-party transactions, and real-time settlement."
+          "Design and development of marketplace payment systems with escrow account management, split payments, multi-party transactions, and real-time settlement.",
+        link: "#"
       },
       %{
         image:
           "https://cdn.dribbble.com/users/1930709/screenshots/11466872/media/e50b0f02160a77397eb4a76782d23966.png?compress=1&resize=1000x750&vertical=top",
         title: "Virtual Asset Exchanges and Trading Systems",
         description:
-          "Design and development of virtual asset exchanges and trading systems for gaming marketplaces, including in-game economies and player-to-player trading systems."
+          "Design and development of virtual asset exchanges and trading systems for gaming marketplaces, including in-game economies and player-to-player trading systems.",
+        link: "#"
       },
       %{
         image:
           "https://cdn.dribbble.com/users/1644453/screenshots/14403641/media/21e305eb9c8255b6e3367f0ca52c6668.png?compress=1&resize=1000x750&vertical=top",
         title: "Automated Reward Distributions and Real-Time Points Balance Updates",
         description:
-          "Design and development of loyalty and rewards systems with automated reward distributions, real-time points balance updates, and multi-program support."
+          "Design and development of loyalty and rewards systems with automated reward distributions, real-time points balance updates, and multi-program support.",
+        link: "#"
       }
     ]
 

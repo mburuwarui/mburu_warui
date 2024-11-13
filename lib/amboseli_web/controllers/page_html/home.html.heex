@@ -1,11 +1,11 @@
 <.flash_group flash={@flash} />
 <section>
-  <div class="relative grid w-full bg-indigo-500 dark:bg-indigo-900 h-96 lg:h-[32rem] place-items-center">
+  <div class="relative grid w-full bg-zinc-500 dark:bg-zinc-800 h-96 lg:h-[32rem] place-items-center">
     <div class="flex flex-col items-center mx-auto text-center">
-      <h1 class="text-4xl font-semibold text-white uppercase md:text-6xl">Mburu Warui</h1>
+      <h1 class="text-4xl font-semibold text-white md:text-6xl">Mburu Warui</h1>
 
       <p class="mt-6 text-lg leading-5 text-white">
-        Software Engineer & Architect of Scalable Applications
+        Software Engineer & Architect of Scalable Financial Applications
       </p>
 
       <a href="#about" class="mt-8 cursor-pointer animate-bounce">
@@ -27,7 +27,7 @@
   </div>
 
   <svg
-    class="fill-indigo-500 dark:fill-indigo-900"
+    class="fill-zinc-500 dark:fill-zinc-800"
     viewBox="0 0 1440 57"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -40,14 +40,14 @@
   <div class="lg:flex lg:items-center lg:-mx-4">
     <div class="lg:w-1/2 lg:px-4">
       <h3 class="text-xl font-medium text-gray-800 dark:text-zinc-200 md:text-2xl lg:text-3xl">
-        Building Scalable Applications and Digital Experiences
+        Building Scalable OLTP Applications and Digital Experiences
       </h3>
 
       <p class="mt-6 text-gray-500 dark:text-zinc-400">
         I design and develop scalable applications, focusing on gaming marketplaces, in-game economies, player-to-player trading systems, virtual asset exchanges, loyalty and rewards systems, enterprise resource management, and marketplace payment systems.
       </p>
 
-      <button class="flex items-center mt-8 -mx-2 text-indigo-500 dark:text-indigo-900">
+      <button class="flex items-center mt-8 -mx-2 text-zinc-500 dark:text-zinc-900">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="w-8 h-8 mx-1"
@@ -84,8 +84,8 @@
 <section class="container px-6 py-8 mx-auto lg:py-16">
   <div class="grid grid-cols-1 gap-8 xl:gap-12 md:grid-cols-2 xl:grid-cols-3">
     <%= for service <- @services do %>
-      <div class="p-8 space-y-3 border-2 border-indigo-400 dark:border-indigo-600 rounded-lg">
-        <span class="inline-block text-indigo-500 dark:text-indigo-400">
+      <div class="p-8 space-y-3 border-2 border-zinc-400 dark:border-zinc-600 rounded-lg">
+        <span class="inline-block text-zinc-500 dark:text-zinc-400">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="w-8 h-8"
@@ -121,7 +121,7 @@
 
   <div class="flex items-center py-6 mt-4 -mx-2 overflow-x-auto whitespace-nowrap">
     <%= for category <- @categories do %>
-      <button class=" inline-flex px-4 mx-2 duration-300 transition-colors hover:bg-indigo-500/70 hover:text-white text-gray-500 dark:text-zinc-200 focus:outline-none py-0.5 cursor-pointer rounded-2xl">
+      <button class=" inline-flex px-4 mx-2 duration-300 transition-colors hover:bg-zinc-500/70 hover:text-white text-gray-500 dark:text-zinc-200 focus:outline-none py-0.5 cursor-pointer rounded-2xl">
         <%= category %>
       </button>
     <% end %>
@@ -129,7 +129,7 @@
 
   <div class="grid grid-cols-1 gap-10 mt-10 md:grid-cols-2 lg:grid-cols-3">
     <%= for project <- @projects do %>
-      <.link href="#" class="flex-shrink-0">
+      <.link href={project.link} class="flex-shrink-0">
         <div class="relative overflow-hidden rounded-lg group">
           <img
             class="object-cover object-center w-full h-64 rounded-lg lg:h-80 transition-all duration-300 ease-in-out group-hover:scale-110"
@@ -186,16 +186,13 @@
           <%= post.title %>
         </h1>
 
-        <hr class="w-32 my-6 text-indigo-500 dark:text-indigo-400" />
+        <hr class="w-32 my-6 text-zinc-500 dark:text-zinc-400" />
 
         <p class="text-sm text-gray-500 dark:text-zinc-400">
           <%= post.description %>
         </p>
 
-        <a
-          href={post.link}
-          class="inline-block mt-4 text-indigo-500 underline hover:text-indigo-400"
-        >
+        <a href={post.link} class="inline-block mt-4 text-zinc-500 underline hover:text-zinc-400">
           Read more
         </a>
       </div>
