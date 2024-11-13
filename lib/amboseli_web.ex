@@ -57,6 +57,24 @@ defmodule AmboseliWeb do
     end
   end
 
+  def dash_view do
+    quote do
+      use Phoenix.LiveView,
+        layout: {CongaWeb.Layouts, :dash}
+
+      unquote(html_helpers())
+    end
+  end
+
+  def blog_view do
+    quote do
+      use Phoenix.LiveView,
+        layout: {CongaWeb.Layouts, :blog}
+
+      unquote(html_helpers())
+    end
+  end
+
   def live_component do
     quote do
       use Phoenix.LiveComponent
