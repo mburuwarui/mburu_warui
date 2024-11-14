@@ -97,6 +97,9 @@ defmodule Amboseli.MixProject do
       test: ["ash.setup --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind amboseli", "esbuild amboseli"],
+      "gleam.build": [
+        "cmd cd assets/hooks && rm -rf build && gleam build"
+      ],
       "assets.deploy": [
         "tailwind amboseli --minify",
         "esbuild amboseli --minify",
