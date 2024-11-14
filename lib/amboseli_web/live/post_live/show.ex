@@ -15,12 +15,10 @@ defmodule AmboseliWeb.PostLive.Show do
               <.back navigate={~p"/posts"}>Back to notebooks</.back>
             </div>
             <%= if @current_user == @post.user do %>
-              <.link
-                patch={~p"/posts/#{@post}/show/edit"}
-                phx-click={JS.push_focus()}
-                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-zinc-600 bg-yellow-400 hover:bg-yellow-500"
-              >
-                <.icon name="hero-pencil-square" class="mr-2 h-5 w-5" /> Edit Notebook
+              <.link patch={~p"/posts/#{@post}/show/edit"} phx-click={JS.push_focus()}>
+                <.button>
+                  <.icon name="hero-pencil-square" class="mr-2 h-5 w-5" /> Edit Notebook
+                </.button>
               </.link>
             <% end %>
           </div>
