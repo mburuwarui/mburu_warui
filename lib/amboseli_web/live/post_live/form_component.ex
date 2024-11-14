@@ -114,7 +114,6 @@ defmodule AmboseliWeb.PostLive.FormComponent do
 
     post_params =
       post_params
-      |> Map.put("user_id", socket.assigns.current_user.id)
       |> Map.put("categories", categories)
 
     form =
@@ -146,7 +145,6 @@ defmodule AmboseliWeb.PostLive.FormComponent do
 
     post_params =
       post_params
-      |> Map.put("user_id", socket.assigns.current_user.id)
       |> Map.put("categories", categories)
 
     form =
@@ -193,7 +191,6 @@ defmodule AmboseliWeb.PostLive.FormComponent do
 
     post_params =
       params
-      |> Map.put("user_id", socket.assigns.current_user.id)
       |> Map.put("categories", Enum.map(socket.assigns.selected_categories, &%{"name" => &1}))
       |> Map.put("pictures", Enum.map(uploaded_files, &%{"url" => &1}))
 

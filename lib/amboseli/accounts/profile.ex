@@ -4,9 +4,8 @@ defmodule Amboseli.Accounts.Profile do
     domain: Amboseli.Accounts,
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshGraphql.Resource, AshJsonApi.Resource]
-
-  import Ash.Notifier.PubSub
+    extensions: [AshGraphql.Resource, AshJsonApi.Resource],
+    notifiers: [Ash.Notifier.PubSub]
 
   json_api do
     type "profile"
@@ -53,20 +52,14 @@ defmodule Amboseli.Accounts.Profile do
 
     create :create do
       primary? true
-      upsert? true
-      upsert_identity :unique_user
 
       accept [:first_name, :last_name, :occupation]
-
-      argument :user_id, :uuid do
-        allow_nil? false
-      end
 
       argument :profile_picture, :string do
         allow_nil? false
       end
 
-      change manage_relationship(:user_id, :user, type: :append)
+      change relate_actor(:user)
       change set_attribute(:avatar, arg(:profile_picture))
     end
 
@@ -91,16 +84,27 @@ defmodule Amboseli.Accounts.Profile do
     end
 
     policy action_type(:create) do
-      authorize_if actor_present()
+      authorize_if actor_attribute_equals(:role, :admin)
+      authorize_if actor_attribute_equals(:role, :author)
     end
 
     policy action_type(:update) do
-      authorize_if relates_to_actor_via(:user)
+      authorize_if actor_attribute_equals(:role, :admin)
+      authorize_if actor_attribute_equals(:role, :author)
     end
 
     policy action_type(:destroy) do
-      authorize_if relates_to_actor_via(:user)
+      authorize_if actor_attribute_equals(:role, :admin)
+      authorize_if actor_attribute_equals(:role, :author)
     end
+  end
+
+  pub_sub do
+    module AmboseliWeb.Endpoint
+    prefix "profile"
+    publish_all :create, ["created"]
+    publish_all :update, ["updated"]
+    publish_all :destroy, ["deleted"]
   end
 
   attributes do
@@ -137,18 +141,5 @@ defmodule Amboseli.Accounts.Profile do
       public? true
       allow_nil? false
     end
-  end
-
-  identities do
-    identity :unique_user, [:user_id]
-  end
-
-  pub_sub do
-    module AmboseliWeb.Endpoint
-    prefix "profile"
-
-    publish_all :create, ["profiles"]
-    publish_all :update, ["profiles"]
-    publish_all :destroy, ["profiles"]
   end
 end

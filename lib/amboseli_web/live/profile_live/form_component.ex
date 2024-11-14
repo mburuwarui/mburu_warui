@@ -94,7 +94,6 @@ defmodule AmboseliWeb.ProfileLive.FormComponent do
 
     profile_params =
       profile_params
-      |> Map.put("user_id", socket.assigns.current_user.id)
       |> Map.put("profile_picture", List.first(uploaded_files))
 
     IO.inspect(profile_params, label: "profile_params")

@@ -6,7 +6,8 @@ defmodule Amboseli.Blog.Post do
     domain: Amboseli.Blog,
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshGraphql.Resource, AshJsonApi.Resource, Ash.Notifier.PubSub]
+    extensions: [AshGraphql.Resource, AshJsonApi.Resource],
+    notifiers: [Ash.Notifier.PubSub]
 
   json_api do
     type "post"
@@ -66,10 +67,6 @@ defmodule Amboseli.Blog.Post do
       validate string_length(:title, min: 4)
       validate string_length(:body, min: 100)
 
-      argument :user_id, :uuid do
-        allow_nil? false
-      end
-
       argument :pictures, {:array, :map} do
         allow_nil? false
       end
@@ -78,7 +75,7 @@ defmodule Amboseli.Blog.Post do
         allow_nil? false
       end
 
-      change manage_relationship(:user_id, :user, type: :append)
+      change relate_actor(:user)
 
       change manage_relationship(:categories,
                type: :append_and_remove,
@@ -197,17 +194,15 @@ defmodule Amboseli.Blog.Post do
 
   policies do
     policy action_type(:read) do
-      authorize_if expr(visibility == :public)
       authorize_if actor_attribute_equals(:role, :admin)
       authorize_if actor_attribute_equals(:role, :author)
       authorize_if actor_attribute_equals(:role, :user)
+      authorize_if expr(visibility == :public)
     end
 
     policy action_type(:update) do
       authorize_if actor_attribute_equals(:role, :admin)
       authorize_if actor_attribute_equals(:role, :author)
-      authorize_if actor_present()
-      # authorize_if relates_to_actor_via(:user)
     end
 
     policy action_type(:destroy) do
@@ -223,10 +218,10 @@ defmodule Amboseli.Blog.Post do
 
   pub_sub do
     module AmboseliWeb.Endpoint
-    prefix "post"
-    publish_all :create, ["posts"]
-    publish_all :update, ["posts"]
-    publish_all :destroy, ["posts"]
+    prefix "posts"
+    publish_all :create, ["created"]
+    publish_all :update, ["updated"]
+    publish_all :destroy, ["deleted"]
   end
 
   attributes do

@@ -92,6 +92,7 @@ defmodule Amboseli.Accounts.User do
     has_many :comments, Amboseli.Blog.Comment
     has_many :likes, Amboseli.Blog.Like
     has_many :bookmarks, Amboseli.Blog.Bookmark
+    has_one :profile, Amboseli.Accounts.Profile
   end
 
   identities do
