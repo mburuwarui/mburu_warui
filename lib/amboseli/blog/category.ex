@@ -4,7 +4,8 @@ defmodule Amboseli.Blog.Category do
     domain: Amboseli.Blog,
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshGraphql.Resource, AshJsonApi.Resource]
+    extensions: [AshGraphql.Resource, AshJsonApi.Resource],
+    notifiers: [Ash.Notifier.PubSub]
 
   json_api do
     type "category"
@@ -64,6 +65,14 @@ defmodule Amboseli.Blog.Category do
     policy action_type(:create) do
       authorize_if actor_present()
     end
+  end
+
+  pub_sub do
+    module AmboseliWeb.Endpoint
+    prefix "categories"
+    publish_all :create, ["created"]
+    publish_all :update, ["updated"]
+    publish_all :destroy, ["deleted"]
   end
 
   attributes do

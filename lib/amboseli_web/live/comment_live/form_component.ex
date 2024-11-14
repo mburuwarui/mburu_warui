@@ -46,12 +46,10 @@ defmodule AmboseliWeb.CommentLive.FormComponent do
     comment_params =
       case socket.assigns.parent_comment do
         nil ->
-          Map.put(comment_params, "user_id", socket.assigns.current_user.id)
-          |> Map.put("post_id", socket.assigns.post.id)
+          Map.put(comment_params, "post_id", socket.assigns.post.id)
 
         parent_comment ->
-          Map.put(comment_params, "user_id", socket.assigns.current_user.id)
-          |> Map.put("post_id", socket.assigns.post.id)
+          Map.put(comment_params, "post_id", socket.assigns.post.id)
           |> Map.put("parent_comment_id", parent_comment.id)
       end
 

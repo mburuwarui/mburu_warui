@@ -4,9 +4,8 @@ defmodule Amboseli.Blog.Comment do
     domain: Amboseli.Blog,
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshGraphql.Resource, AshJsonApi.Resource]
-
-  import Ash.Notifier.PubSub
+    extensions: [AshGraphql.Resource, AshJsonApi.Resource],
+    notifiers: [Ash.Notifier.PubSub]
 
   json_api do
     type "comment"
@@ -67,12 +66,8 @@ defmodule Amboseli.Blog.Comment do
         allow_nil? false
       end
 
-      argument :user_id, :uuid do
-        allow_nil? false
-      end
-
       change manage_relationship(:post_id, :post, type: :append)
-      change manage_relationship(:user_id, :user, type: :append)
+      change relate_actor(:user)
     end
 
     create :create_child_comment do
@@ -83,10 +78,6 @@ defmodule Amboseli.Blog.Comment do
       end
 
       argument :parent_comment_id, :uuid do
-        allow_nil? false
-      end
-
-      argument :user_id, :uuid do
         allow_nil? false
       end
 
@@ -119,6 +110,16 @@ defmodule Amboseli.Blog.Comment do
     policy action(:approve) do
       authorize_if actor_attribute_equals(:role, :moderator)
     end
+  end
+
+  pub_sub do
+    module AmboseliWeb.Endpoint
+    prefix "comment"
+
+    publish_all :create, ["created"]
+    publish_all :update, ["updated"]
+    publish_all :destroy, ["destroyed"]
+    publish :approve, ["comment", :id, "approved"]
   end
 
   attributes do
@@ -169,15 +170,5 @@ defmodule Amboseli.Blog.Comment do
   aggregates do
     count :like_count, :likes
     count :bookmark_count, :bookmarks
-  end
-
-  pub_sub do
-    module AmboseliWeb.Endpoint
-    prefix "comment"
-
-    publish_all :create, ["comments"]
-    publish_all :update, ["comments"]
-    publish_all :destroy, ["comments"]
-    publish :approve, ["comment", :id, "approved"]
   end
 end
