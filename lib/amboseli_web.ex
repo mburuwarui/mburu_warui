@@ -108,6 +108,7 @@ defmodule AmboseliWeb do
       import AmboseliWeb.Component.Badge
       import AmboseliWeb.Component.DropdownMenu
       import AmboseliWeb.Component.Separator
+      import AmboseliWeb.Component.Card
 
       use Gettext, backend: AmboseliWeb.Gettext
 
