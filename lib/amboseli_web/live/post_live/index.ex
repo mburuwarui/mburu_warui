@@ -288,6 +288,7 @@ defmodule AmboseliWeb.PostLive.Index do
     {:ok,
      socket
      |> assign(:posts, [])
+     |> stream(:posts, [])
      |> assign_new(:current_user, fn -> nil end)
      |> assign(:current_category, nil)
      |> assign(:profiles, [])

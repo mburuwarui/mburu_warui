@@ -212,7 +212,8 @@ defmodule AmboseliWeb.PostLive.Show do
 
     {:ok,
      socket
-     |> assign(:profiles, profiles)}
+     |> assign(:profiles, profiles)
+     |> stream(:comments, [])}
   end
 
   @impl true
