@@ -532,7 +532,7 @@ defmodule AmboseliWeb.PostLive.Show do
             <.link patch={~p"/posts/#{@post}/comments/#{@comment}/new"} phx-click={JS.push_focus()}>
               <.tooltip>
                 <Lucideicons.reply class="text-blue-400 w-4 h-4 sm:w-5 sm:h-5" />
-                <.tooltip_content class="bg-primary text-white" side="left">
+                <.tooltip_content class="bg-primary text-white dark:text-zinc-700" side="left">
                   <p>Reply</p>
                 </.tooltip_content>
               </.tooltip>
