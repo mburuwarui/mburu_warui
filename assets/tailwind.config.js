@@ -7,6 +7,7 @@ const path = require("path");
 
 module.exports = {
   content: [
+    "../deps/salad_ui/lib/**/*.ex",
     "./js/**/*.js",
     "../lib/amboseli_web.ex",
     "../lib/amboseli_web/**/*.*ex",

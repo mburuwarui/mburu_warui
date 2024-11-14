@@ -1,13 +1,6 @@
 defmodule AmboseliWeb.PostLive.Show do
   use AmboseliWeb, :live_view
 
-  import SaladUI.Badge
-  import SaladUI.DropdownMenu
-  import SaladUI.Menu
-  import SaladUI.Separator
-  import SaladUI.Tooltip
-  import SaladUI.Button
-
   @impl true
   def render(assigns) do
     ~H"""

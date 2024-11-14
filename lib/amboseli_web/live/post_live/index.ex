@@ -1,9 +1,5 @@
 defmodule AmboseliWeb.PostLive.Index do
   use AmboseliWeb, :blog_view
-  import SaladUI.DropdownMenu
-  import SaladUI.Menu
-  import SaladUI.Badge
-  import SaladUI.Button
 
   @impl true
   def render(assigns) do

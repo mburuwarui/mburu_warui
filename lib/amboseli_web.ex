@@ -101,6 +101,14 @@ defmodule AmboseliWeb do
       # HTML escaping functionality
       import Phoenix.HTML
       import AmboseliWeb.CoreComponents
+
+      import AmboseliWeb.Component.Button
+      import AmboseliWeb.Component.Tooltip
+      import AmboseliWeb.Component.Menu
+      import AmboseliWeb.Component.Badge
+      import AmboseliWeb.Component.DropdownMenu
+      import AmboseliWeb.Component.Separator
+
       use Gettext, backend: AmboseliWeb.Gettext
 
       # Shortcut for generating JS commands
