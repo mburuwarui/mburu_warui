@@ -4,9 +4,8 @@ defmodule Amboseli.Blog.Like do
     domain: Amboseli.Blog,
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshGraphql.Resource, AshJsonApi.Resource]
-
-  import Ash.Notifier.PubSub
+    extensions: [AshGraphql.Resource, AshJsonApi.Resource],
+    notifiers: [Ash.Notifier.PubSub]
 
   json_api do
     type "like"
@@ -73,6 +72,14 @@ defmodule Amboseli.Blog.Like do
     end
   end
 
+  pub_sub do
+    module AmboseliWeb.Endpoint
+    prefix "like"
+
+    publish_all :create, ["created"]
+    publish_all :destroy, ["deleted"]
+  end
+
   attributes do
     uuid_primary_key :id
 
@@ -98,13 +105,5 @@ defmodule Amboseli.Blog.Like do
 
   identities do
     identity :unique_user_and_post, [:user_id, :post_id]
-  end
-
-  pub_sub do
-    module AmboseliWeb.Endpoint
-    prefix "like"
-
-    publish_all :create, ["likes"]
-    publish_all :destroy, ["likes"]
   end
 end

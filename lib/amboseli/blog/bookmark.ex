@@ -4,9 +4,8 @@ defmodule Amboseli.Blog.Bookmark do
     domain: Amboseli.Blog,
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshGraphql.Resource, AshJsonApi.Resource]
-
-  import Ash.Notifier.PubSub
+    extensions: [AshGraphql.Resource, AshJsonApi.Resource],
+    notifiers: [Ash.Notifier.PubSub]
 
   json_api do
     type "bookmark"
@@ -59,15 +58,6 @@ defmodule Amboseli.Blog.Bookmark do
     end
   end
 
-  pub_sub do
-    module AmboseliWeb.Endpoint
-    prefix "bookmark"
-
-    publish_all :create, ["bookmarks"]
-    publish_all :update, ["bookmarks"]
-    publish_all :destroy, ["bookmarks"]
-  end
-
   policies do
     policy action_type(:create) do
       authorize_if actor_present()
@@ -80,6 +70,15 @@ defmodule Amboseli.Blog.Bookmark do
     policy action_type([:destroy]) do
       authorize_if relates_to_actor_via(:user)
     end
+  end
+
+  pub_sub do
+    module AmboseliWeb.Endpoint
+    prefix "bookmark"
+
+    publish_all :create, ["created"]
+    publish_all :update, ["updated"]
+    publish_all :destroy, ["deleted"]
   end
 
   attributes do
