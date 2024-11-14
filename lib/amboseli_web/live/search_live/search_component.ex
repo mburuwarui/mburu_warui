@@ -26,9 +26,9 @@ defmodule AmboseliWeb.SearchLive.SearchComponent do
           <.link
             :for={post <- @posts}
             navigate={~p"/posts/#{post}"}
-            class="focus:outline-none focus:bg-slate-100 focus:text-sky-800"
+            class="focus:outline-none focus:bg-slate-100 focus:text-sky-800 bg-none dark:focus:text-sky-200 dark:focus:bg-zinc-700 dark:text-white text-sm rounded-md"
           >
-            <.card_content class="flex flex-row mb-2 gap-2 space-x-2 rounded-md px-4 py-2 bg-zinc-100 hover:bg-zinc-600 hover:text-white items-center">
+            <.card_content class="flex flex-row my-2 gap-2 space-x-2 rounded-md px-4 py-2 bg-zinc-100 hover:bg-zinc-600 hover:text-white items-center dark:bg-zinc-600 dark:hover:bg-zinc-700">
               <img
                 src={post.pictures |> Enum.at(0) |> Map.get(:url)}
                 class="w-10 h-10 rounded-md object-cover"

@@ -29,7 +29,7 @@ defmodule AmboseliWeb.PostLive.FormComponent do
         <.input field={@form[:visibility]} label="Visibility" />
 
         <div class="space-y-2">
-          <label class="block text-sm font-medium text-gray-700">Categories</label>
+          <label class="block text-sm font-medium text-zinc-700 dark:text-zinc-200">Categories</label>
           <%= for category <- @available_categories do %>
             <div class="flex items-center">
               <.input

@@ -9,7 +9,7 @@ defmodule AmboseliWeb.PostLive.Index do
     <div class="mx-auto max-w-7xl">
       <.header>
         <div class="w-full text-center mb-4 sm:mb-10">
-          <h1 class="text-4xl font-extrabold">Notebooks</h1>
+          <h1 class="text-4xl font-extrabold dark:text-white">Notebooks</h1>
         </div>
 
         <div class="py-4 flex sm:flex-row flex-col justify-between gap-4 items-center">
@@ -44,7 +44,7 @@ defmodule AmboseliWeb.PostLive.Index do
                 <.button
                   aria-haspopup="true"
                   variant="outline"
-                  class="w-full sm:w-auto items-center gap-2"
+                  class="w-full sm:w-auto items-center gap-2 dark:text-white"
                 >
                   <.icon name="hero-bars-3-bottom-left" class="h-6 w-6" />
                   <span>Sort by</span>
@@ -80,7 +80,7 @@ defmodule AmboseliWeb.PostLive.Index do
               </.button>
             </.link>
             <.link patch={~p"/search"} class="w-full sm:w-auto">
-              <.button class="w-full sm:w-auto text-gray-500 bg-white hover:ring-gray-500 hover:text-white ring-gray-300 items-center gap-10 rounded-md px-3 text-sm ring-1 transition focus:[&:not(:focus-visible)]:outline-none">
+              <.button class="w-full sm:w-auto text-gray-500 bg-white hover:ring-gray-500 hover:text-white dark:text-zinc-900 dark:hover:text-zinc-700 ring-gray-300 items-center gap-10 rounded-md px-3 text-sm ring-1 transition focus:[&:not(:focus-visible)]:outline-none">
                 <div class="flex items-center gap-2">
                   <Lucideicons.search class="h-4 w-4" />
                   <span class="flex-grow text-left">Find notebooks</span>
