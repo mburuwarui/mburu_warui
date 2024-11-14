@@ -303,6 +303,16 @@ defmodule AmboseliWeb.CoreComponents do
     """
   end
 
+  def simple_search(assigns) do
+    ~H"""
+    <.form :let={f} for={@for} as={@as} {@rest} action="" novalidate="" role="search">
+      <div class="bg-white">
+        <%= render_slot(@inner_block, f) %>
+      </div>
+    </.form>
+    """
+  end
+
   @doc """
   Renders a button.
 
