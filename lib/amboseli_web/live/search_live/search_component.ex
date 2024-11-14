@@ -2,7 +2,6 @@ defmodule AmboseliWeb.SearchLive.SearchComponent do
   require Ash.Query
   use AmboseliWeb, :live_component
 
-  import SaladUI.Card
   import Ecto.Query, warn: false
   @impl true
   def render(assigns) do
