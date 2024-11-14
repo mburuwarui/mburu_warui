@@ -367,6 +367,40 @@ defmodule AmboseliWeb.CoreComponents do
     """
   end
 
+  def input(%{type: "search"} = assigns) do
+    ~H"""
+    <div phx-feedback-for={@name} class="relative">
+      <.label for={@id}><%= @label %></.label>
+      <Lucideicons.search class="h-4 w-4 absolute top-1/2 left-3 -translate-y-1/2 text-gray-400" />
+      <input
+        type={@type}
+        name={@name}
+        id={@id}
+        value={Phoenix.HTML.Form.normalize_value(@type, @value)}
+        class={[
+          "h-12 w-full border-none focus:ring-0 pl-11 pr-4 text-gray-800 placeholder-gray-400 sm:text-sm",
+          "phx-no-feedback:border-zinc-300 phx-no-feedback:focus:border-zinc-400",
+          @errors == [] && "border-zinc-300 focus:border-zinc-400",
+          @errors != [] && "border-rose-400 focus:border-rose-400"
+        ]}
+        role="combobox"
+        aria-expanded="false"
+        aria-autocomplete="both"
+        aria-controls="searchbox__results_list"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        enterkeyhint="search"
+        spellcheck="false"
+        value=""
+        tabindex="0"
+        {@rest}
+      />
+      <.error :for={msg <- @errors}><%= msg %></.error>
+    </div>
+    """
+  end
+
   # All other inputs text, datetime-local, url, password, etc. are handled here...
   def input(assigns) do
     ~H"""
