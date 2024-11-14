@@ -1,6 +1,8 @@
 defmodule AmboseliWeb.PostLive.Show do
   use AmboseliWeb, :live_view
 
+  on_mount {AmboseliWeb.LiveUserAuth, :live_user_optional}
+
   @impl true
   def render(assigns) do
     ~H"""

@@ -1,6 +1,8 @@
 defmodule AmboseliWeb.ProfileLive.FormComponent do
   use AmboseliWeb, :live_component
 
+  on_mount {AmboseliWeb.LiveUserAuth, :live_user_required}
+
   @impl true
   def render(assigns) do
     ~H"""
