@@ -60,7 +60,7 @@ defmodule AmboseliWeb do
   def dash_view do
     quote do
       use Phoenix.LiveView,
-        layout: {CongaWeb.Layouts, :dash}
+        layout: {AmboseliWeb.Layouts, :dash}
 
       unquote(html_helpers())
     end
@@ -69,7 +69,7 @@ defmodule AmboseliWeb do
   def blog_view do
     quote do
       use Phoenix.LiveView,
-        layout: {CongaWeb.Layouts, :blog}
+        layout: {AmboseliWeb.Layouts, :blog}
 
       unquote(html_helpers())
     end

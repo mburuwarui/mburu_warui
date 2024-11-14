@@ -10,5 +10,7 @@ defmodule AmboseliWeb.Layouts do
   """
   use AmboseliWeb, :html
 
+  import SaladUI.Tooltip
+
   embed_templates "layouts/*"
 end
