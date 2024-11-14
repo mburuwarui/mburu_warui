@@ -61,6 +61,10 @@ defmodule Amboseli.Accounts.User do
     #   forbid_if always()
     # end
 
+    policy action_type(:read) do
+      authorize_if always()
+    end
+
     policy action_type([:create, :update]) do
       authorize_if expr(id == ^actor(:id))
     end

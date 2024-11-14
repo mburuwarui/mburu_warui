@@ -194,10 +194,10 @@ defmodule Amboseli.Blog.Post do
 
   policies do
     policy action_type(:read) do
+      authorize_if expr(visibility == :public)
       authorize_if actor_attribute_equals(:role, :admin)
       authorize_if actor_attribute_equals(:role, :author)
       authorize_if actor_attribute_equals(:role, :user)
-      authorize_if expr(visibility == :public)
     end
 
     policy action_type(:update) do
