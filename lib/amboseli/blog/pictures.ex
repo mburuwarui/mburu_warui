@@ -50,7 +50,7 @@ defmodule Amboseli.Blog.Pictures do
     create :new_picture do
       primary? true
 
-      accept [:url]
+      accept [:url, :post_id]
 
       change set_attribute(:post_id, arg(:post_id))
       change relate_actor(:user)

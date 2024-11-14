@@ -21,7 +21,10 @@ ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
 FROM ${BUILDER_IMAGE} as builder
 
 # install build dependencies
-RUN apt-get update -y && apt-get install -y build-essential git \
+RUN apt-get update -y && apt-get install -y build-essential git  \
+    curl \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
     && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
 # prepare build dir
@@ -43,13 +46,18 @@ RUN mkdir config
 # to ensure any relevant config change will trigger the dependencies
 # to be re-compiled.
 COPY config/config.exs config/${MIX_ENV}.exs config/
-RUN mix deps.compile
 
+COPY assets assets
+
+# Install npm dependencies for Tailwind
+WORKDIR /app/assets
+RUN npm install tailwindcss-animate
+WORKDIR /app
+
+RUN mix deps.compile
 COPY priv priv
 
 COPY lib lib
-
-COPY assets assets
 
 # compile assets
 RUN mix assets.deploy
