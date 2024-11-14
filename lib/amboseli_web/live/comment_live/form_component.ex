@@ -1,6 +1,8 @@
 defmodule AmboseliWeb.CommentLive.FormComponent do
   use AmboseliWeb, :live_component
 
+  import SaladUI.Button
+
   @impl true
   def render(assigns) do
     ~H"""

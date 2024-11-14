@@ -1,6 +1,8 @@
 defmodule AmboseliWeb.ProductLive.Show do
   use AmboseliWeb, :live_view
 
+  import SaladUI.Button
+
   @impl true
   def render(assigns) do
     ~H"""

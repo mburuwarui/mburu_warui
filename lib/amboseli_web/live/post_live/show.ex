@@ -6,6 +6,7 @@ defmodule AmboseliWeb.PostLive.Show do
   import SaladUI.Menu
   import SaladUI.Separator
   import SaladUI.Tooltip
+  import SaladUI.Button
 
   @impl true
   def render(assigns) do

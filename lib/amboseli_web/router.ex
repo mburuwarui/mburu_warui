@@ -46,6 +46,25 @@ defmodule AmboseliWeb.Router do
 
       live "/products/:id", ProductLive.Show, :show
       live "/products/:id/show/edit", ProductLive.Show, :edit
+
+      live "/posts", PostLive.Index, :index
+      live "/posts/:id", PostLive.Show, :show
+      live "/posts/new", PostLive.Index, :new
+      live "/posts/:id/edit", PostLive.Index, :edit
+      live "/posts/:id/show/edit", PostLive.Show, :edit
+
+      live "/posts/category/:category", PostLive.Index, :filter_by_category
+      live "/search", PostLive.Index, :search
+
+      live "/posts/:id/comments/new", PostLive.Show, :new_comment
+      live "/posts/:id/comments/:c_id/new", PostLive.Show, :new_comment_child
+      live "/posts/:id/comments/:c_id/edit", PostLive.Show, :edit_comment
+
+      live "/profile", ProfileLive.Index, :index
+      live "/profile/new", ProfileLive.Index, :new
+      live "/profile/:id", ProfileLive.Show, :show
+      live "/profile/:id/edit", ProfileLive.Index, :edit
+      live "/profile/:id/show/edit", ProfileLive.Show, :edit
     end
   end
 
