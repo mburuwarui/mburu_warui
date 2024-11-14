@@ -2,7 +2,7 @@ defmodule Amboseli.Blog.Post do
   require Ecto.Query
 
   use Ash.Resource,
-    otp_app: :conga,
+    otp_app: :amboseli,
     domain: Amboseli.Blog,
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],

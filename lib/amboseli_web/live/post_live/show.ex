@@ -229,7 +229,7 @@ defmodule AmboseliWeb.PostLive.Show do
 
   defp apply_action(socket, :show, %{"id" => id}) do
     post =
-      Amboseli.Posts.Post
+      Amboseli.Blog.Post
       |> Ash.get!(id, actor: socket.assigns.current_user)
       |> Ash.load!(post_fields(socket))
 
@@ -237,7 +237,7 @@ defmodule AmboseliWeb.PostLive.Show do
 
     # Only increment page views if it's not a reconnection
     unless connected?(socket) do
-      Amboseli.Posts.Post.inc_page_views!(post,
+      Amboseli.Blog.Post.inc_page_views!(post,
         actor: socket.assigns.current_user,
         authorize?: false
       )
@@ -254,7 +254,7 @@ defmodule AmboseliWeb.PostLive.Show do
 
     current_user = socket.assigns.current_user
 
-    categories = Amboseli.Posts.Category.list_all!(actor: current_user)
+    categories = Amboseli.Blog.Category.list_all!(actor: current_user)
 
     user =
       post.user
@@ -275,11 +275,11 @@ defmodule AmboseliWeb.PostLive.Show do
     current_user = socket.assigns.current_user
 
     post =
-      Amboseli.Posts.Post
+      Amboseli.Blog.Post
       |> Ash.get!(id, actor: current_user)
       |> Ash.load!(post_fields(socket))
 
-    categories = Amboseli.Posts.Category.list_all!(actor: current_user)
+    categories = Amboseli.Blog.Category.list_all!(actor: current_user)
 
     socket
     |> assign(:page_title, "Edit Notebook")
@@ -292,11 +292,11 @@ defmodule AmboseliWeb.PostLive.Show do
     current_user = socket.assigns.current_user
 
     post =
-      Amboseli.Posts.Post
+      Amboseli.Blog.Post
       |> Ash.get!(post_id, actor: current_user)
       |> Ash.load!(post_fields(socket))
 
-    categories = Amboseli.Posts.Category.list_all!(actor: current_user)
+    categories = Amboseli.Blog.Category.list_all!(actor: current_user)
 
     comments = post.comments
 
@@ -313,11 +313,11 @@ defmodule AmboseliWeb.PostLive.Show do
     current_user = socket.assigns.current_user
 
     parent_comment =
-      Amboseli.Posts.Comment
+      Amboseli.Blog.Comment
       |> Ash.get!(id, actor: current_user)
       |> Ash.load!([:post, :child_comments, :parent_comment])
 
-    categories = Amboseli.Posts.Category.list_all!(actor: current_user)
+    categories = Amboseli.Blog.Category.list_all!(actor: current_user)
 
     post =
       parent_comment.post
@@ -336,7 +336,7 @@ defmodule AmboseliWeb.PostLive.Show do
 
   defp apply_action(socket, :edit_comment, %{"c_id" => id}) do
     comment =
-      Amboseli.Posts.Comment
+      Amboseli.Blog.Comment
       |> Ash.get!(id, actor: socket.assigns.current_user)
       |> Ash.load!([:post, :parent_comment])
 
@@ -354,7 +354,7 @@ defmodule AmboseliWeb.PostLive.Show do
 
   @impl true
   def handle_info({AmboseliWeb.CommentLive.FormComponent, {:saved, comment}}, socket) do
-    categories = Amboseli.Posts.Category.list_all!(actor: socket.assigns.current_user)
+    categories = Amboseli.Blog.Category.list_all!(actor: socket.assigns.current_user)
 
     comment =
       comment |> Ash.load!([:user, :post, :child_comments, :parent_comment])
@@ -370,7 +370,7 @@ defmodule AmboseliWeb.PostLive.Show do
 
   @impl true
   def handle_info({AmboseliWeb.PostLive.FormComponent, {:saved, updated_post}}, socket) do
-    categories = Amboseli.Posts.Category.list_all!(actor: socket.assigns.current_user)
+    categories = Amboseli.Blog.Category.list_all!(actor: socket.assigns.current_user)
 
     post =
       updated_post
@@ -389,7 +389,7 @@ defmodule AmboseliWeb.PostLive.Show do
   def handle_event("like", _params, socket) do
     post =
       socket.assigns.post
-      |> Amboseli.Posts.Post.like!(actor: socket.assigns.current_user)
+      |> Amboseli.Blog.Post.like!(actor: socket.assigns.current_user)
       |> Map.put(:liked_by_user, true)
       |> Ash.load!([:like_count, :comments, :popularity_score, :comment_count])
 
@@ -404,7 +404,7 @@ defmodule AmboseliWeb.PostLive.Show do
   def handle_event("dislike", _params, socket) do
     post =
       socket.assigns.post
-      |> Amboseli.Posts.Post.dislike!(actor: socket.assigns.current_user)
+      |> Amboseli.Blog.Post.dislike!(actor: socket.assigns.current_user)
       |> Map.put(:liked_by_user, false)
       |> Ash.load!([:like_count, :comments, :popularity_score, :comment_count])
 
@@ -420,7 +420,7 @@ defmodule AmboseliWeb.PostLive.Show do
   def handle_event("bookmark", _params, socket) do
     post =
       socket.assigns.post
-      |> Amboseli.Posts.Post.bookmark!(actor: socket.assigns.current_user)
+      |> Amboseli.Blog.Post.bookmark!(actor: socket.assigns.current_user)
       |> Map.put(:bookmarked_by_user, true)
       |> Ash.load!([:bookmark_count, :comments, :popularity_score])
 
@@ -435,7 +435,7 @@ defmodule AmboseliWeb.PostLive.Show do
   def handle_event("unbookmark", _params, socket) do
     post =
       socket.assigns.post
-      |> Amboseli.Posts.Post.unbookmark!(actor: socket.assigns.current_user)
+      |> Amboseli.Blog.Post.unbookmark!(actor: socket.assigns.current_user)
       |> Map.put(:bookmarked_by_user, false)
       |> Ash.load!([:bookmark_count, :comments, :popularity_score])
 
@@ -450,7 +450,7 @@ defmodule AmboseliWeb.PostLive.Show do
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     comment =
-      Ash.get!(Amboseli.Posts.Comment, id, actor: socket.assigns.current_user)
+      Ash.get!(Amboseli.Blog.Comment, id, actor: socket.assigns.current_user)
       |> Ash.load!([:post])
 
     Ash.destroy!(comment, actor: socket.assigns.current_user)
