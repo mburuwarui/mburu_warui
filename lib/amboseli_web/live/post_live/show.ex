@@ -1,5 +1,5 @@
 defmodule AmboseliWeb.PostLive.Show do
-  use AmboseliWeb, :live_view
+  use AmboseliWeb, :blog_view
 
   on_mount {AmboseliWeb.LiveUserAuth, :live_user_optional}
 
@@ -32,7 +32,9 @@ defmodule AmboseliWeb.PostLive.Show do
             />
           </div>
 
-          <h1 class="text-4xl font-extrabold text-center text-gray-900 my-14"><%= @post.title %></h1>
+          <h1 class="text-4xl font-extrabold text-center text-gray-900 my-14 dark:text-white">
+            <%= @post.title %>
+          </h1>
 
           <div class="flex justify-between items-end">
             <div :if={@profile && @profile.user_id == @post.user_id} class="flex">
@@ -56,7 +58,7 @@ defmodule AmboseliWeb.PostLive.Show do
               <div
                 phx-hook="LocalTime"
                 id={"inserted_at-#{@post.inserted_at}"}
-                class="hidden md:block invisible text-sm text-gray-700"
+                class="hidden md:block invisible text-sm text-gray-700 dark:text-gray-200"
               >
                 <%= DateTime.to_string(@post.inserted_at) %>
               </div>
@@ -65,7 +67,7 @@ defmodule AmboseliWeb.PostLive.Show do
 
           <.post_actions post={@post} current_user={@current_user} current_uri={@current_uri} />
 
-          <div class="prose prose-lg max-w-none mb-8">
+          <div class="prose prose-lg max-w-none mb-8 dark:prose-invert">
             <%= MDEx.to_html!(@post.body,
               features: [syntax_highlight_theme: "dracula"],
               extension: [
@@ -570,7 +572,7 @@ defmodule AmboseliWeb.PostLive.Show do
             </.dropdown_menu>
           </div>
         </div>
-        <p class="text-xs sm:text-sm text-gray-700"><%= @comment.content %></p>
+        <p class="text-xs sm:text-sm text-gray-700 dark:text-gray-200"><%= @comment.content %></p>
         <%= render_slot(@inner_block) %>
       </div>
     </div>
@@ -651,7 +653,7 @@ defmodule AmboseliWeb.PostLive.Show do
           <.dropdown_menu_trigger>
             <.tooltip>
               <.icon name="hero-arrow-up-on-square" class="text-yellow-500 cursor-pointer" />
-              <.tooltip_content class="bg-primary text-white">
+              <.tooltip_content class="bg-primary text-white dark:text-zinc-900">
                 <p>Share</p>
               </.tooltip_content>
             </.tooltip>

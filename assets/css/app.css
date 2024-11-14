@@ -24,6 +24,10 @@
   @apply text-zinc-900 transform translate-x-1;
 }
 
+.dark .toc-list a:hover {
+  @apply text-zinc-400 transform translate-x-1;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

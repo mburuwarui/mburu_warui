@@ -49,7 +49,7 @@ liveSocket.connect();
 window.liveSocket = liveSocket;
 
 // Custom JS functions
-//
+
 // Dark Mode
 function darkExpected() {
   return (
@@ -81,57 +81,122 @@ function initDarkMode() {
     document.getElementById("icon").classList.remove("sun-icon");
   }
 }
+
+function switchTheme(isDark) {
+  const header = document.querySelector("header");
+  if (header.id === "header_blog") {
+    if (isDark) {
+      header.classList.remove("light");
+      header.classList.add("dark");
+      document
+        .querySelectorAll("#header_blog .light-text")
+        .forEach((element) => {
+          element.classList.remove("light-text");
+          element.classList.add("dark-text");
+        });
+      document
+        .querySelectorAll("#header_blog .light-icon")
+        .forEach((element) => {
+          element.classList.remove("light-icon");
+          element.classList.add("dark-icon");
+        });
+    } else {
+      header.classList.remove("dark");
+      header.classList.add("light");
+      document
+        .querySelectorAll("#header_blog .dark-text")
+        .forEach((element) => {
+          element.classList.remove("dark-text");
+          element.classList.add("light-text");
+        });
+      document
+        .querySelectorAll("#header_blog .dark-icon")
+        .forEach((element) => {
+          element.classList.remove("dark-icon");
+          element.classList.add("light-icon");
+        });
+    }
+  } else {
+    if (isDark) {
+      header.classList.remove("bg-zinc-500");
+      header.classList.add("bg-zinc-800");
+    } else {
+      header.classList.remove("bg-zinc-800");
+      header.classList.add("bg-zinc-500");
+    }
+  }
+}
+
 // Header Scroll effect
 window.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("scroll", function () {
     const header = document.querySelector("header");
     const headerHeight = header.offsetHeight;
     const scrollPosition = window.pageYOffset;
-
     // Check if dark mode is enabled
     const isDarkMode = darkExpected();
-
     if (scrollPosition >= headerHeight) {
       if (isDarkMode) {
-        header.classList.remove("bg-zinc-800");
-        header.classList.add("bg-transparent");
+        if (header.id === "header_blog") {
+          // Do nothing for the blog header's background color
+        } else {
+          header.classList.remove("bg-zinc-800");
+          header.classList.add("bg-transparent");
+        }
       } else {
-        header.classList.remove("bg-zinc-500");
-        header.classList.add("bg-transparent");
+        if (header.id === "header_blog") {
+          // Do nothing for the blog header's background color
+        } else {
+          header.classList.remove("bg-zinc-500");
+          header.classList.add("bg-transparent");
+        }
       }
     } else {
       if (isDarkMode) {
-        header.classList.remove("bg-transparent");
-        header.classList.add("bg-zinc-800");
+        if (header.id === "header_blog") {
+          // Do nothing for the blog header's background color
+        } else {
+          header.classList.remove("bg-transparent");
+          header.classList.add("bg-zinc-800");
+        }
       } else {
-        header.classList.remove("bg-transparent");
-        header.classList.add("bg-zinc-500");
+        if (header.id === "header_blog") {
+          // Do nothing for the blog header's background color
+        } else {
+          header.classList.remove("bg-transparent");
+          header.classList.add("bg-zinc-500");
+        }
       }
     }
   });
 });
 
+// Add event listener for phx:page-loading-start and phx:page-loading-stop
+["phx:page-loading-start", "phx:page-loading-stop"].forEach((event) => {
+  window.addEventListener(event, (info) => {
+    initDarkMode();
+  });
+});
+
+// Add event listener for toggle-darkmode
 window.addEventListener("toggle-darkmode", (e) => {
-  const header = document.querySelector("header");
-
-  if (darkExpected()) {
-    header.classList.remove("bg-zinc-800");
-    header.classList.add("bg-zinc-500");
-    localStorage.theme = "light";
-  } else {
-    header.classList.remove("bg-zinc-500");
-    header.classList.add("bg-zinc-800");
-    localStorage.theme = "dark";
-  }
-
+  const isDark = !darkExpected();
+  switchTheme(isDark);
+  localStorage.theme = isDark ? "dark" : "light";
   initDarkMode();
 });
 
+// Initialize the theme based on local storage
+if (localStorage.theme === "dark") {
+  switchTheme(true);
+} else if (localStorage.theme === "light") {
+  switchTheme(false);
+}
 initDarkMode();
 
 // Allows to execute JS commands from the server
-window.addEventListener("phx:js-exec", ({detail}) => {
-  document.querySelectorAll(detail.to).forEach(el => {
-    liveSocket.execJS(el, el.getAttribute(detail.attr))
-  })
-})
+window.addEventListener("phx:js-exec", ({ detail }) => {
+  document.querySelectorAll(detail.to).forEach((el) => {
+    liveSocket.execJS(el, el.getAttribute(detail.attr));
+  });
+});

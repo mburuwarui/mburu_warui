@@ -81,6 +81,8 @@ TableOfContents = {
       link.classList.add(
         "text-zinc-600",
         "hover:text-zinc-900",
+        "dark:text-zinc-200",
+        "dark:hover:text-zinc-400",
         "transition-colors",
         "duration-50",
       );
