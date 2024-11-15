@@ -40,6 +40,10 @@ defmodule AmboseliWeb.Router do
       #
       # If an authenticated user must *not* be present:
       # on_mount {AmboseliWeb.LiveUserAuth, :live_no_user}
+      #
+
+      live "/", HomeLive.Index, :home
+
       live "/products", ProductLive.Index, :index
       live "/products/new", ProductLive.Index, :new
       live "/products/:id/edit", ProductLive.Index, :edit
@@ -103,7 +107,7 @@ defmodule AmboseliWeb.Router do
   scope "/", AmboseliWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    # get "/", PageController, :home
 
     auth_routes AuthController, Amboseli.Accounts.User, path: "/auth"
     sign_out_route AuthController

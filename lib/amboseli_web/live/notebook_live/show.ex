@@ -238,15 +238,7 @@ defmodule AmboseliWeb.NotebookLive.Show do
       |> Ash.get!(id, actor: socket.assigns.current_user)
       |> Ash.load!(notebook_fields(socket))
 
-    # IO.inspect(notebook, label: "notebook")
-
-    # Only increment page views if it's not a reconnection
-    unless connected?(socket) do
-      Amboseli.Blog.Notebook.inc_page_views!(notebook,
-        actor: socket.assigns.current_user,
-        authorize?: false
-      )
-    end
+    send(self(), :increment_page_view)
 
     comments =
       notebook.comments
@@ -355,6 +347,20 @@ defmodule AmboseliWeb.NotebookLive.Show do
     |> assign(:comment, comment)
     |> assign(:parent_comment, nil)
     |> assign(:notebook, notebook)
+  end
+
+  @impl true
+  def handle_info(:increment_page_view, socket) do
+    notebook = socket.assigns.notebook
+    # Only increment page views if it's not a reconnection
+    unless connected?(socket) do
+      Amboseli.Blog.Notebook.inc_page_views!(notebook,
+        actor: socket.assigns.current_user,
+        authorize?: false
+      )
+    end
+
+    {:noreply, socket}
   end
 
   @impl true
