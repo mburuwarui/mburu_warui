@@ -17,7 +17,9 @@ defmodule AmboseliWeb do
   those modules here.
   """
 
-  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
+  def static_paths,
+    do:
+      ~w(assets fonts images favicon.ico robots.txt  apple-touch-icon.png  favicon-96x96.png  favicon.svg  manifest.json web-app-manifest-192x192.png  web-app-manifest-512x512.png)
 
   def router do
     quote do
