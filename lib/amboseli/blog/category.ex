@@ -49,7 +49,7 @@ defmodule Amboseli.Blog.Category do
       upsert? true
       upsert_identity :unique_name
 
-      accept [:name]
+      accept [:name, :description]
     end
 
     read :list_all do
@@ -82,6 +82,12 @@ defmodule Amboseli.Blog.Category do
       allow_nil? false
       public? true
       description "The category of the blog post"
+    end
+
+    attribute :description, :string do
+      allow_nil? false
+      public? true
+      description "The description of the category"
     end
 
     timestamps()
