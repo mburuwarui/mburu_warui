@@ -233,20 +233,12 @@ defmodule AmboseliWeb.NotebookLive.Show do
   end
 
   defp apply_action(socket, :show, %{"id" => id}) do
+    increment_page_view(socket, id)
+
     notebook =
       Amboseli.Blog.Notebook
       |> Ash.get!(id, actor: socket.assigns.current_user)
       |> Ash.load!(notebook_fields(socket))
-
-    # IO.inspect(notebook, label: "notebook")
-
-    # Only increment page views if it's not a reconnection
-    unless connected?(socket) do
-      Amboseli.Blog.Notebook.inc_page_views!(notebook,
-        actor: socket.assigns.current_user,
-        authorize?: false
-      )
-    end
 
     comments =
       notebook.comments
@@ -254,8 +246,6 @@ defmodule AmboseliWeb.NotebookLive.Show do
         comment
         |> Ash.load!([:child_comments, :user, :parent_comment])
       end)
-
-    # IO.inspect(comments, label: "comments")
 
     current_user = socket.assigns.current_user
 
@@ -265,10 +255,9 @@ defmodule AmboseliWeb.NotebookLive.Show do
       notebook.user
       |> Ash.load!([:profile])
 
-    # IO.inspect(user, label: "user")
-
     socket
     |> assign(:page_title, "Show Notebook")
+    |> assign(:current_notebook_id, id)
     |> assign(:notebook, notebook)
     |> assign(:comments, comments)
     |> stream(:comments, comments, reset: true)
@@ -489,6 +478,26 @@ defmodule AmboseliWeb.NotebookLive.Show do
         user_id: socket.assigns.current_user && socket.assigns.current_user.id
       }
     ]
+  end
+
+  defp increment_page_view(socket, id) do
+    # Only increment page views if this is a different notebook
+    notebook =
+      Amboseli.Blog.Notebook
+      |> Ash.get!(id, actor: socket.assigns.current_user)
+      |> Ash.load!(notebook_fields(socket))
+
+    # Get the previous notebook ID from socket assigns
+    previous_notebook_id = Map.get(socket.assigns, :current_notebook_id)
+
+    if previous_notebook_id != id and connected?(socket) do
+      Amboseli.Blog.Notebook.inc_page_views!(notebook,
+        actor: socket.assigns.current_user,
+        authorize?: false
+      )
+    end
+
+    {:noreply, socket}
   end
 
   defp comment_tree(assigns) do
