@@ -3,5 +3,6 @@ defmodule Amboseli.Catalog do
 
   resources do
     resource Amboseli.Catalog.Product
+    resource Amboseli.Catalog.App
   end
 end

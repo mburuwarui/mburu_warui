@@ -66,6 +66,13 @@ defmodule AmboseliWeb.Router do
       live "/profile/:id", ProfileLive.Show, :show
       live "/profile/:id/edit", ProfileLive.Index, :edit
       live "/profile/:id/show/edit", ProfileLive.Show, :edit
+
+      live "/apps", AppLive.Index, :index
+      live "/apps/new", AppLive.Index, :new
+      live "/apps/:id/edit", AppLive.Index, :edit
+
+      live "/apps/:id", AppLive.Show, :show
+      live "/apps/:id/show/edit", AppLive.Show, :edit
     end
   end
 
