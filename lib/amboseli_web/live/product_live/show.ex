@@ -1,5 +1,5 @@
 defmodule AmboseliWeb.ProductLive.Show do
-  use AmboseliWeb, :live_view
+  use AmboseliWeb, :blog_view
 
   on_mount {AmboseliWeb.LiveUserAuth, :live_user_optional}
 
