@@ -14,6 +14,25 @@
       <%!-- </p> --%>
     </div>
     <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900 dark:text-zinc-200">
+      <nav class="hidden md:flex items-center gap-4">
+        <.link navigate={~p"/"}>
+          <.button variant="link">
+            Home
+          </.button>
+        </.link>
+        <.link navigate={~p"/notebooks"}>
+          <.button variant="link">
+            Notebooks
+          </.button>
+        </.link>
+        <.link navigate={~p"/products"}>
+          <.button variant="link">
+            Store
+          </.button>
+        </.link>
+      </nav>
+    </div>
+    <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900 dark:text-zinc-200">
       <a href="https://twitter.com/mburu_warui" class="flex items-center">
         <img src="/images/x.svg" class="mr-2 h-4 w-4 dark:hidden" />
         <img src="/images/x_dark.svg" class="mr-2 h-4 w-4 hidden dark:block" />
@@ -25,7 +44,7 @@
       </a>
 
       <a href="https://huggingface.co/Joste" class="flex items-center">
-        <img src="/images/hugging_face.svg" class="mr-2 h-5 w-5" />
+        <img src="/images/hugging_face.svg" class="mr-2 h-5 w-5 grayscale dark:grayscale-[50%]" />
       </a>
       <button type="button" class="flex items-center" phx-click={JS.dispatch("toggle-darkmode")}>
         <svg
@@ -65,7 +84,7 @@
 </main>
 
 <footer class="flex flex-col items-center py-20 text-white dark:text-zinc-200 bg-zinc-500 dark:bg-zinc-800">
-  <p class="text-center">Copyright © 2024, Mburu Warui Inc.</p>
+  <p class="text-center">Copyright 2024, Mburu Warui Inc.</p>
 
   <svg
     xmlns="http://www.w3.org/2000/svg"
