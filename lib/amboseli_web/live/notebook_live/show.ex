@@ -106,11 +106,7 @@ defmodule AmboseliWeb.NotebookLive.Show do
                 <%= for notebook_category <- @categories do %>
                   <%= if category.category_id == notebook_category.id do %>
                     <.link navigate={~p"/notebooks/category/#{category.category_id}"}>
-                      <.badge
-                        variant="outline"
-                        class="border-yellow-400 bg-white text-yellow-500 bg-opacity-35 mb-2 justify-center"
-                      >
-                        <.icon name="hero-tag" class="mr-1 w-4 h-4" />
+                      <.badge variant="outline" class="mb-2 justify-center">
                         <%= notebook_category.name %>
                       </.badge>
                     </.link>
