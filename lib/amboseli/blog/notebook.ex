@@ -1,4 +1,4 @@
-defmodule Amboseli.Blog.Post do
+defmodule Amboseli.Blog.Notebook do
   require Ecto.Query
 
   use Ash.Resource,
@@ -10,10 +10,10 @@ defmodule Amboseli.Blog.Post do
     notifiers: [Ash.Notifier.PubSub]
 
   json_api do
-    type "post"
+    type "notebook"
 
     routes do
-      base "/posts"
+      base "/notebooks"
 
       get :read
       post :create
@@ -21,15 +21,15 @@ defmodule Amboseli.Blog.Post do
   end
 
   graphql do
-    type :post
+    type :notebook
 
     queries do
-      get :get_post, :read
+      get :get_notebook, :read
     end
   end
 
   postgres do
-    table "posts"
+    table "notebooks"
     repo Amboseli.Repo
 
     references do
@@ -40,7 +40,7 @@ defmodule Amboseli.Blog.Post do
   end
 
   resource do
-    description "A blog post with extended features and policies"
+    description "A blog notebook with extended features and policies"
   end
 
   code_interface do
@@ -54,7 +54,7 @@ defmodule Amboseli.Blog.Post do
     define :inc_page_views
     define :list_public
     define :list_dashboard
-    define :search_posts
+    define :search_notebooks
   end
 
   actions do
@@ -127,7 +127,7 @@ defmodule Amboseli.Blog.Post do
         like =
           Ecto.Query.from(like in Amboseli.Blog.Like,
             where: like.user_id == ^actor.id,
-            where: like.post_id == ^changeset.data.id
+            where: like.notebook_id == ^changeset.data.id
           )
 
         Amboseli.Repo.delete_all(like)
@@ -140,7 +140,7 @@ defmodule Amboseli.Blog.Post do
       accept []
 
       manual fn changeset, %{actor: actor} ->
-        with {:ok, _} <- Amboseli.Blog.Bookmark.bookmark_post(changeset.data.id, actor: actor) do
+        with {:ok, _} <- Amboseli.Blog.Bookmark.bookmark_notebook(changeset.data.id, actor: actor) do
           {:ok, changeset.data}
         end
       end
@@ -153,7 +153,7 @@ defmodule Amboseli.Blog.Post do
         bookmark =
           Ecto.Query.from(like in Amboseli.Blog.Bookmark,
             where: like.user_id == ^actor.id,
-            where: like.post_id == ^changeset.data.id
+            where: like.notebook_id == ^changeset.data.id
           )
 
         Amboseli.Repo.delete_all(bookmark)
@@ -179,7 +179,7 @@ defmodule Amboseli.Blog.Post do
       prepare build(sort: [inserted_at: :desc], filter: [user_id: actor(:id)])
     end
 
-    read :search_posts do
+    read :search_notebooks do
       argument :query, :string do
         allow_nil? false
       end
@@ -218,7 +218,7 @@ defmodule Amboseli.Blog.Post do
 
   pub_sub do
     module AmboseliWeb.Endpoint
-    prefix "posts"
+    prefix "notebooks"
     publish_all :create, ["created"]
     publish_all :update, ["updated"]
     publish_all :destroy, ["deleted"]
@@ -230,26 +230,26 @@ defmodule Amboseli.Blog.Post do
     attribute :title, :string do
       allow_nil? false
       public? true
-      description "The title of the blog post"
+      description "The title of the blog notebook"
     end
 
     attribute :body, :string do
       allow_nil? false
       public? true
-      description "The main content of the blog post"
+      description "The main content of the blog notebook"
     end
 
     attribute :visibility, :atom do
       constraints one_of: [:public, :private, :friends]
       default :public
       public? true
-      description "Visibility setting for the post"
+      description "Visibility setting for the notebook"
     end
 
     attribute :page_views, :integer do
       default 0
       public? true
-      description "The number of views for the post"
+      description "The number of views for the notebook"
     end
 
     attribute :livemd_url, :string do
@@ -273,8 +273,8 @@ defmodule Amboseli.Blog.Post do
     has_many :pictures, Amboseli.Blog.Pictures
 
     many_to_many :categories, Amboseli.Blog.Category do
-      through Amboseli.Blog.PostCategory
-      source_attribute_on_join_resource :post_id
+      through Amboseli.Blog.NotebookCategory
+      source_attribute_on_join_resource :notebook_id
       destination_attribute_on_join_resource :category_id
       public? true
     end

@@ -32,7 +32,7 @@ defmodule Amboseli.Blog.Category do
   end
 
   resource do
-    description "A category of a post"
+    description "A category of a notebook"
   end
 
   code_interface do
@@ -81,7 +81,7 @@ defmodule Amboseli.Blog.Category do
     attribute :name, :string do
       allow_nil? false
       public? true
-      description "The category of the blog post"
+      description "The category of the blog notebook"
     end
 
     attribute :description, :string do
@@ -94,10 +94,10 @@ defmodule Amboseli.Blog.Category do
   end
 
   relationships do
-    many_to_many :posts, Amboseli.Blog.Post do
-      through Amboseli.Blog.PostCategory
+    many_to_many :notebooks, Amboseli.Blog.Notebook do
+      through Amboseli.Blog.NotebookCategory
       source_attribute_on_join_resource :category_id
-      destination_attribute_on_join_resource :post_id
+      destination_attribute_on_join_resource :notebook_id
       public? true
     end
   end

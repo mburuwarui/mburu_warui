@@ -24,7 +24,7 @@ defmodule Amboseli.Blog.Bookmark do
         on_delete :delete
       end
 
-      reference :post do
+      reference :notebook do
         on_delete :delete
       end
 
@@ -35,25 +35,25 @@ defmodule Amboseli.Blog.Bookmark do
   end
 
   resource do
-    description "A bookmark of a post by a user"
+    description "A bookmark of a notebook by a user"
   end
 
   code_interface do
-    define :bookmark_post, args: [:post_id]
+    define :bookmark_notebook, args: [:notebook_id]
   end
 
   actions do
     defaults [:read, :destroy]
 
-    create :bookmark_post do
+    create :bookmark_notebook do
       upsert? true
-      upsert_identity :unique_user_and_post
+      upsert_identity :unique_user_and_notebook
 
-      argument :post_id, :uuid do
+      argument :notebook_id, :uuid do
         allow_nil? false
       end
 
-      change set_attribute(:post_id, arg(:post_id))
+      change set_attribute(:notebook_id, arg(:notebook_id))
       change relate_actor(:user)
     end
   end
@@ -93,7 +93,7 @@ defmodule Amboseli.Blog.Bookmark do
       allow_nil? false
     end
 
-    belongs_to :post, Amboseli.Blog.Post do
+    belongs_to :notebook, Amboseli.Blog.Notebook do
       public? true
       allow_nil? false
     end
@@ -105,6 +105,6 @@ defmodule Amboseli.Blog.Bookmark do
   end
 
   identities do
-    identity :unique_user_and_post, [:user_id, :post_id]
+    identity :unique_user_and_notebook, [:user_id, :notebook_id]
   end
 end

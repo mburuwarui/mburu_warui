@@ -28,7 +28,7 @@ defmodule Amboseli.Blog.Comment do
         on_delete :delete
       end
 
-      reference :post do
+      reference :notebook do
         on_delete :delete
       end
 
@@ -39,11 +39,11 @@ defmodule Amboseli.Blog.Comment do
   end
 
   resource do
-    description "A comment on a blog post"
+    description "A comment on a blog notebook"
   end
 
   code_interface do
-    define :create_child_comment, args: [:post_id, :parent_comment_id]
+    define :create_child_comment, args: [:notebook_id, :parent_comment_id]
   end
 
   actions do
@@ -62,18 +62,18 @@ defmodule Amboseli.Blog.Comment do
       primary? true
       accept [:content]
 
-      argument :post_id, :uuid do
+      argument :notebook_id, :uuid do
         allow_nil? false
       end
 
-      change manage_relationship(:post_id, :post, type: :append)
+      change manage_relationship(:notebook_id, :notebook, type: :append)
       change relate_actor(:user)
     end
 
     create :create_child_comment do
       accept [:content]
 
-      argument :post_id, :uuid do
+      argument :notebook_id, :uuid do
         allow_nil? false
       end
 
@@ -81,7 +81,7 @@ defmodule Amboseli.Blog.Comment do
         allow_nil? false
       end
 
-      change manage_relationship(:post_id, :post, type: :append)
+      change manage_relationship(:notebook_id, :notebook, type: :append)
       change manage_relationship(:parent_comment_id, :parent_comment, type: :append)
 
       change relate_actor(:user)
@@ -141,7 +141,7 @@ defmodule Amboseli.Blog.Comment do
   end
 
   relationships do
-    belongs_to :post, Amboseli.Blog.Post do
+    belongs_to :notebook, Amboseli.Blog.Notebook do
       public? true
       allow_nil? false
     end

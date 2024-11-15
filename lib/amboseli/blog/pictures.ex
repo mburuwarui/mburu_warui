@@ -29,19 +29,19 @@ defmodule Amboseli.Blog.Pictures do
         on_delete :delete
       end
 
-      reference :post do
+      reference :notebook do
         on_delete :delete
       end
     end
   end
 
   resource do
-    description "A picture on a blog post"
+    description "A picture on a blog notebook"
   end
 
   code_interface do
     define :list_pictures
-    define :new_picture, args: [:post_id, :url]
+    define :new_picture, args: [:notebook_id, :url]
   end
 
   actions do
@@ -50,9 +50,9 @@ defmodule Amboseli.Blog.Pictures do
     create :new_picture do
       primary? true
 
-      accept [:url, :post_id]
+      accept [:url, :notebook_id]
 
-      change set_attribute(:post_id, arg(:post_id))
+      change set_attribute(:notebook_id, arg(:notebook_id))
       change relate_actor(:user)
     end
 
@@ -84,7 +84,7 @@ defmodule Amboseli.Blog.Pictures do
     attribute :url, :string do
       allow_nil? false
       public? true
-      description "The picture of the blog post"
+      description "The picture of the blog notebook"
     end
 
     attribute :is_approved, :boolean do
@@ -102,7 +102,7 @@ defmodule Amboseli.Blog.Pictures do
       allow_nil? false
     end
 
-    belongs_to :post, Amboseli.Blog.Post do
+    belongs_to :notebook, Amboseli.Blog.Notebook do
       public? true
       allow_nil? false
     end

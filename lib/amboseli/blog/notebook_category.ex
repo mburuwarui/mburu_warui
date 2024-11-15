@@ -1,4 +1,4 @@
-defmodule Amboseli.Blog.PostCategory do
+defmodule Amboseli.Blog.NotebookCategory do
   use Ash.Resource,
     otp_app: :amboseli,
     domain: Amboseli.Blog,
@@ -6,29 +6,29 @@ defmodule Amboseli.Blog.PostCategory do
     extensions: [AshGraphql.Resource, AshJsonApi.Resource]
 
   json_api do
-    type "post_category"
+    type "notebook_category"
 
     routes do
-      base "/post_categories"
+      base "/notebook_categories"
 
       get :read
     end
 
     primary_key do
-      keys [:post_id, :category_id]
+      keys [:notebook_id, :category_id]
     end
   end
 
   graphql do
-    type :post_category
+    type :notebook_category
   end
 
   postgres do
-    table "post_categories"
+    table "notebook_categories"
     repo Amboseli.Repo
 
     references do
-      reference :post do
+      reference :notebook do
         on_delete :delete
       end
 
@@ -39,7 +39,7 @@ defmodule Amboseli.Blog.PostCategory do
   end
 
   resource do
-    description "A join table for category of a post"
+    description "A join table for category of a notebook"
   end
 
   actions do
@@ -48,12 +48,12 @@ defmodule Amboseli.Blog.PostCategory do
     create :create do
       primary? true
       upsert? true
-      upsert_identity :unique_post_category
+      upsert_identity :unique_notebook_category
     end
   end
 
   relationships do
-    belongs_to :post, Amboseli.Blog.Post do
+    belongs_to :notebook, Amboseli.Blog.Notebook do
       public? true
       primary_key? true
       allow_nil? false
@@ -67,6 +67,6 @@ defmodule Amboseli.Blog.PostCategory do
   end
 
   identities do
-    identity :unique_post_category, [:post_id, :category_id]
+    identity :unique_notebook_category, [:notebook_id, :category_id]
   end
 end

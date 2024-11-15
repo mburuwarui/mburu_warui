@@ -24,7 +24,7 @@ defmodule Amboseli.Blog.Like do
         on_delete :delete
       end
 
-      reference :post do
+      reference :notebook do
         on_delete :delete
       end
 
@@ -35,11 +35,11 @@ defmodule Amboseli.Blog.Like do
   end
 
   resource do
-    description "A like on a post or comment"
+    description "A like on a notebook or comment"
   end
 
   code_interface do
-    define :like, args: [:post_id]
+    define :like, args: [:notebook_id]
   end
 
   actions do
@@ -47,13 +47,13 @@ defmodule Amboseli.Blog.Like do
 
     create :like do
       upsert? true
-      upsert_identity :unique_user_and_post
+      upsert_identity :unique_user_and_notebook
 
-      argument :post_id, :uuid do
+      argument :notebook_id, :uuid do
         allow_nil? false
       end
 
-      change set_attribute(:post_id, arg(:post_id))
+      change set_attribute(:notebook_id, arg(:notebook_id))
       change relate_actor(:user)
     end
   end
@@ -92,7 +92,7 @@ defmodule Amboseli.Blog.Like do
       allow_nil? false
     end
 
-    belongs_to :post, Amboseli.Blog.Post do
+    belongs_to :notebook, Amboseli.Blog.Notebook do
       public? true
       allow_nil? true
     end
@@ -104,6 +104,6 @@ defmodule Amboseli.Blog.Like do
   end
 
   identities do
-    identity :unique_user_and_post, [:user_id, :post_id]
+    identity :unique_user_and_notebook, [:user_id, :notebook_id]
   end
 end
