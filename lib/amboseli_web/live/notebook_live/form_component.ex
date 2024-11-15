@@ -26,7 +26,12 @@ defmodule AmboseliWeb.NotebookLive.FormComponent do
       >
         <.input field={@form[:title]} label="Title" required />
         <.input field={@form[:body]} type="textarea" label="Body" required />
-        <.input field={@form[:visibility]} label="Visibility" />
+        <.input
+          field={@form[:visibility]}
+          type="select"
+          options={[:public, :private]}
+          label="Visibility"
+        />
 
         <div class="space-y-2">
           <label class="block text-sm font-medium text-zinc-700 dark:text-zinc-200">Categories</label>

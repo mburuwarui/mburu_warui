@@ -42,14 +42,14 @@ defmodule Amboseli.Catalog.App do
 
     create :create do
       primary? true
-      accept [:title, :description, :picture]
+      accept [:title, :description, :picture, :visibility]
 
       change relate_actor(:user)
     end
 
     update :update do
       primary? true
-      accept [:title, :description, :picture]
+      accept [:title, :description, :picture, :visibility]
     end
 
     update :public_update do

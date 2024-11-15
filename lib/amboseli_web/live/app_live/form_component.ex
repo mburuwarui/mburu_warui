@@ -17,11 +17,15 @@ defmodule AmboseliWeb.AppLive.FormComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <.input field={@form[:title]} type="text" label="Title" /><.input
-          field={@form[:description]}
-          type="text"
-          label="Description"
-        /><.input field={@form[:picture]} type="text" label="Picture" />
+        <.input field={@form[:title]} type="text" label="Title" />
+        <.input field={@form[:description]} type="text" label="Description" />
+        <.input field={@form[:picture]} type="text" label="Picture" />
+        <.input
+          field={@form[:visibility]}
+          type="select"
+          options={[:public, :private]}
+          label="Visibility"
+        />
 
         <:actions>
           <.button phx-disable-with="Saving...">Save App</.button>
