@@ -1,4 +1,4 @@
-defmodule AmboseliWeb.PostLive.Index do
+defmodule AmboseliWeb.NotebookLive.Index do
   use AmboseliWeb, :blog_view
 
   on_mount {AmboseliWeb.LiveUserAuth, :live_user_optional}
@@ -17,7 +17,7 @@ defmodule AmboseliWeb.PostLive.Index do
             <div class="flex flex-wrap gap-2 w-full sm:w-auto">
               <.link
                 :for={category <- @categories}
-                patch={~p"/posts/category/#{category.id}"}
+                patch={~p"/notebooks/category/#{category.id}"}
                 class="w-full sm:w-auto"
               >
                 <button class={[
@@ -28,7 +28,7 @@ defmodule AmboseliWeb.PostLive.Index do
                   <%= category.name %>
                 </button>
               </.link>
-              <.link patch={~p"/posts"} class="w-full sm:w-auto">
+              <.link patch={~p"/notebooks"} class="w-full sm:w-auto">
                 <button class={[
                   "w-full sm:w-auto px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",
                   @current_category == nil && "bg-indigo-600 text-white",
@@ -72,7 +72,7 @@ defmodule AmboseliWeb.PostLive.Index do
                 (@current_user && @current_user.role == :author) ||
                   (@current_user && @current_user.role == :admin)
               }
-              patch={~p"/posts/new"}
+              patch={~p"/notebooks/new"}
               class="w-full sm:w-auto"
             >
               <.button class="w-full sm:w-auto">
@@ -96,14 +96,18 @@ defmodule AmboseliWeb.PostLive.Index do
       <div
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4"
         phx-update="stream"
-        id="posts"
+        id="notebooks"
       >
-        <div :for={{id, post} <- @streams.posts} class="card flex flex-col h-full group" id={id}>
+        <div
+          :for={{id, notebook} <- @streams.notebooks}
+          class="card flex flex-col h-full group"
+          id={id}
+        >
           <div class="relative flex-shrink-0 overflow-hidden rounded-lg">
-            <.link :if={Enum.any?(post.pictures)} navigate={~p"/posts/#{post}"}>
+            <.link :if={Enum.any?(notebook.pictures)} navigate={~p"/notebooks/#{notebook}"}>
               <img
                 class="object-cover object-center w-full h-64 rounded-lg lg:h-80 transition-all duration-300 ease-in-out group-hover:scale-110 group-hover:shadow-xl"
-                src={Enum.at(post.pictures, -1).url}
+                src={Enum.at(notebook.pictures, -1).url}
                 alt=""
               />
               <div class="absolute inset-0 bg-black bg-opacity-0 transition-opacity duration-300 group-hover:bg-opacity-20">
@@ -112,8 +116,8 @@ defmodule AmboseliWeb.PostLive.Index do
             <div class="top-0 right-0 absolute m-4">
               <div :for={category <- @categories} class="flex flex-col">
                 <.badge
-                  :for={post_category <- post.categories_join_assoc}
-                  :if={post_category.category_id == category.id}
+                  :for={notebook_category <- notebook.categories_join_assoc}
+                  :if={notebook_category.category_id == category.id}
                   variant="outline"
                   class="border-white bg-white text-white bg-opacity-35 mb-2 justify-center"
                 >
@@ -122,7 +126,7 @@ defmodule AmboseliWeb.PostLive.Index do
               </div>
             </div>
             <.dropdown_menu
-              :if={@current_user && @current_user.id == post.user_id}
+              :if={@current_user && @current_user.id == notebook.user_id}
               class="absolute top-0 flex m-4"
             >
               <.dropdown_menu_trigger>
@@ -140,14 +144,14 @@ defmodule AmboseliWeb.PostLive.Index do
                 <.menu>
                   <.menu_label>Actions</.menu_label>
                   <.menu_item>
-                    <.link patch={~p"/posts/#{post}/edit"} class="flex items-center space-x-2">
+                    <.link patch={~p"/notebooks/#{notebook}/edit"} class="flex items-center space-x-2">
                       <.icon name="hero-pencil-square" class="text-blue-400 w-4 h-4 sm:w-5 sm:h-5" />
                       <span class="text-sm sm:text-base">Edit</span>
                     </.link>
                   </.menu_item>
                   <.menu_item>
                     <.link
-                      phx-click={JS.push("delete", value: %{id: post.id}) |> hide("##{id}")}
+                      phx-click={JS.push("delete", value: %{id: notebook.id}) |> hide("##{id}")}
                       data-confirm="Are you sure?"
                       class="flex items-center space-x-2"
                     >
@@ -160,7 +164,7 @@ defmodule AmboseliWeb.PostLive.Index do
             </.dropdown_menu>
             <div
               :for={profile <- @profiles}
-              :if={profile && profile.user_id == post.user_id}
+              :if={profile && profile.user_id == notebook.user_id}
               class="absolute bottom-0 flex p-3 bg-white dark:bg-gray-900"
               a
             >
@@ -181,27 +185,27 @@ defmodule AmboseliWeb.PostLive.Index do
           </div>
           <div class="flex justify-between mt-4 mr-4 ">
             <div class="justify-start flex flex-row gap-5 items-center text-sm text-zinc-400">
-              <div :if={post.page_views > 0} class=" flex gap-1">
-                <Lucideicons.eye class="h-4 w-4" /> <%= post.page_views %>
+              <div :if={notebook.page_views > 0} class=" flex gap-1">
+                <Lucideicons.eye class="h-4 w-4" /> <%= notebook.page_views %>
               </div>
-              <div :if={post.like_count > 0} class=" flex gap-1 items-center">
-                <Lucideicons.heart class="h-4 w-4" /> <%= post.like_count %>
+              <div :if={notebook.like_count > 0} class=" flex gap-1 items-center">
+                <Lucideicons.heart class="h-4 w-4" /> <%= notebook.like_count %>
               </div>
-              <div :if={post.bookmark_count > 0} class=" flex gap-1 items-center">
-                <.icon name="hero-bookmark" class="h-4 w-4" /> <%= post.bookmark_count %>
+              <div :if={notebook.bookmark_count > 0} class=" flex gap-1 items-center">
+                <.icon name="hero-bookmark" class="h-4 w-4" /> <%= notebook.bookmark_count %>
               </div>
-              <div :if={post.comment_count > 0} class=" flex gap-1 items-center">
-                <.icon name="hero-chat-bubble-oval-left" class="w-4 h-4" /> <%= post.comment_count %>
+              <div :if={notebook.comment_count > 0} class=" flex gap-1 items-center">
+                <.icon name="hero-chat-bubble-oval-left" class="w-4 h-4" /> <%= notebook.comment_count %>
               </div>
             </div>
             <div class="flex gap-4">
               <%= if @current_user do %>
-                <%= if post.bookmarked_by_user do %>
-                  <button phx-click="unbookmark" phx-value-id={post.id}>
+                <%= if notebook.bookmarked_by_user do %>
+                  <button phx-click="unbookmark" phx-value-id={notebook.id}>
                     <.icon name="hero-bookmark-solid" class="text-blue-400" />
                   </button>
                 <% else %>
-                  <button phx-click="bookmark" phx-value-id={post.id}>
+                  <button phx-click="bookmark" phx-value-id={notebook.id}>
                     <.icon name="hero-bookmark" class="text-blue-500" />
                   </button>
                 <% end %>
@@ -214,23 +218,23 @@ defmodule AmboseliWeb.PostLive.Index do
           </div>
           <div class="flex flex-col flex-grow relative pt-2 mb-4">
             <div class="text-xs text-zinc-500">
-              <%= Calendar.strftime(post.inserted_at, "%B %d, %Y") %>
+              <%= Calendar.strftime(notebook.inserted_at, "%B %d, %Y") %>
             </div>
             <div class="h-20 mb-2">
               <!-- Fixed height for title area -->
-              <.link navigate={~p"/posts/#{post}"}>
+              <.link navigate={~p"/notebooks/#{notebook}"}>
                 <h1 class="text-xl font-semibold text-gray-800 dark:text-white line-clamp-2">
-                  <%= post.title %>
+                  <%= notebook.title %>
                 </h1>
               </.link>
             </div>
 
             <hr class="w-32 absolute top-[110px] left-0 border-t-1 border-blue-500" />
             <%!--   <p class="text-sm text-gray-500 dark:text-gray-400 flex-grow mt-4"> --%>
-            <%!--     <%= truncate(post.body, 20) |> MDEx.to_html!() |> raw() %> --%>
+            <%!--     <%= truncate(notebook.body, 20) |> MDEx.to_html!() |> raw() %> --%>
             <%!--   </p> --%>
             <%!--   <.link --%>
-            <%!--     navigate={~p"/posts/#{post}"} --%>
+            <%!--     navigate={~p"/notebooks/#{notebook}"} --%>
             <%!--     class="inline-block mt-2 text-blue-500 underline hover:text-blue-400" --%>
             <%!--   > --%>
             <%!--     Read more --%>
@@ -240,21 +244,21 @@ defmodule AmboseliWeb.PostLive.Index do
       </div>
     </div>
 
-    <.modal :if={@live_action in [:new, :edit]} id="post-modal" show on_cancel={JS.patch(@patch)}>
+    <.modal :if={@live_action in [:new, :edit]} id="notebook-modal" show on_cancel={JS.patch(@patch)}>
       <.live_component
-        module={AmboseliWeb.PostLive.FormComponent}
-        id={(@post && @post.id) || :new}
+        module={AmboseliWeb.NotebookLive.FormComponent}
+        id={(@notebook && @notebook.id) || :new}
         title={@page_title}
         current_user={@current_user}
         action={@live_action}
-        post={@post}
-        patch={~p"/posts"}
+        notebook={@notebook}
+        patch={~p"/notebooks"}
       />
     </.modal>
 
     <.search_modal
       :if={@live_action == :search}
-      id="search-post-modal"
+      id="search-notebook-modal"
       show
       on_cancel={JS.patch(@patch)}
     >
@@ -264,8 +268,8 @@ defmodule AmboseliWeb.PostLive.Index do
         title={@page_title}
         current_user={@current_user}
         action={@live_action}
-        posts={@posts}
-        patch={~p"/posts"}
+        notebooks={@notebooks}
+        patch={~p"/notebooks"}
       />
     </.search_modal>
 
@@ -291,8 +295,8 @@ defmodule AmboseliWeb.PostLive.Index do
 
     {:ok,
      socket
-     |> assign(:posts, [])
-     |> stream(:posts, [])
+     |> assign(:notebooks, [])
+     |> stream(:notebooks, [])
      |> assign_new(:current_user, fn -> nil end)
      |> assign(:current_category, nil)
      |> assign(:profiles, [])
@@ -307,8 +311,8 @@ defmodule AmboseliWeb.PostLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     patch = apply_patch(socket)
 
-    post =
-      Ash.get!(Amboseli.Blog.Post, id, actor: socket.assigns.current_user)
+    notebook =
+      Ash.get!(Amboseli.Blog.Notebook, id, actor: socket.assigns.current_user)
       |> Ash.load!([
         :categories_join_assoc,
         :categories,
@@ -318,7 +322,7 @@ defmodule AmboseliWeb.PostLive.Index do
 
     socket
     |> assign(:page_title, "Edit Notebook")
-    |> assign(:post, post)
+    |> assign(:notebook, notebook)
     |> assign(:patch, patch)
   end
 
@@ -327,17 +331,17 @@ defmodule AmboseliWeb.PostLive.Index do
 
     socket
     |> assign(:page_title, "New Notebook")
-    |> assign(:post, nil)
+    |> assign(:notebook, nil)
     |> assign(:patch, patch)
-    |> stream(:posts, fetch_posts(socket, socket.assigns.current_user))
+    |> stream(:notebooks, fetch_notebooks(socket, socket.assigns.current_user))
   end
 
   defp apply_action(socket, :index, _params) do
     current_user = socket.assigns.current_user
-    posts = fetch_posts(socket, current_user)
+    notebooks = fetch_notebooks(socket, current_user)
 
     profiles =
-      Enum.map(posts, & &1.user)
+      Enum.map(notebooks, & &1.user)
       |> Ash.load!([:profile])
       |> Enum.map(& &1.profile)
 
@@ -345,11 +349,11 @@ defmodule AmboseliWeb.PostLive.Index do
 
     socket
     |> assign(:page_title, "Listing Notebooks")
-    |> assign(:post, nil)
+    |> assign(:notebook, nil)
     |> assign(:profiles, profiles)
     |> assign(:current_category, nil)
-    |> assign(:posts, posts)
-    |> stream(:posts, posts, reset: true)
+    |> assign(:notebooks, notebooks)
+    |> stream(:notebooks, notebooks, reset: true)
   end
 
   defp apply_action(socket, :search, _params) do
@@ -357,27 +361,27 @@ defmodule AmboseliWeb.PostLive.Index do
 
     socket
     |> assign(:page_title, "Search")
-    |> assign(:posts, nil)
+    |> assign(:notebooks, nil)
     |> assign(:patch, patch)
   end
 
   defp apply_action(socket, :filter_by_category, %{"category" => category_id}) do
     category = Enum.find(socket.assigns.categories, &(&1.id == category_id))
-    posts = fetch_posts(socket, socket.assigns.current_user, category_id)
+    notebooks = fetch_notebooks(socket, socket.assigns.current_user, category_id)
 
     socket
     |> assign(:page_title, "Category: #{category.name}")
     |> assign(:current_category, category_id)
-    |> assign(:posts, posts)
-    |> stream(:posts, posts, reset: true)
+    |> assign(:notebooks, notebooks)
+    |> stream(:notebooks, notebooks, reset: true)
   end
 
   @impl true
-  def handle_info({AmboseliWeb.PostLive.FormComponent, {:saved, updated_post}}, socket) do
+  def handle_info({AmboseliWeb.NotebookLive.FormComponent, {:saved, updated_notebook}}, socket) do
     categories = Amboseli.Blog.Category.list_all!(actor: socket.assigns.current_user)
 
-    post =
-      updated_post
+    notebook =
+      updated_notebook
       |> Ash.load!([
         :categories_join_assoc,
         :like_count,
@@ -390,21 +394,22 @@ defmodule AmboseliWeb.PostLive.Index do
         }
       ])
 
-    posts = fetch_posts(socket, socket.assigns.current_user, socket.assigns.current_category)
+    notebooks =
+      fetch_notebooks(socket, socket.assigns.current_user, socket.assigns.current_category)
 
     {:noreply,
      socket
-     |> stream_insert(:posts, post, at: 0, reset: true)
+     |> stream_insert(:notebooks, notebook, at: 0, reset: true)
      |> assign(:categories, categories)
-     |> assign(:posts, posts)}
+     |> assign(:notebooks, notebooks)}
   end
 
   @impl true
   def handle_event("bookmark", %{"id" => id}, socket) do
-    post =
-      Amboseli.Blog.Post
+    notebook =
+      Amboseli.Blog.Notebook
       |> Ash.get!(id, actor: socket.assigns.current_user)
-      |> Amboseli.Blog.Post.bookmark!(actor: socket.assigns.current_user)
+      |> Amboseli.Blog.Notebook.bookmark!(actor: socket.assigns.current_user)
       |> Map.put(:bookmarked_by_user, true)
       |> Ash.load!([
         :like_count,
@@ -418,19 +423,20 @@ defmodule AmboseliWeb.PostLive.Index do
         }
       ])
 
-    posts = fetch_posts(socket, socket.assigns.current_user, socket.assigns.current_category)
+    notebooks =
+      fetch_notebooks(socket, socket.assigns.current_user, socket.assigns.current_category)
 
     {:noreply,
      socket
-     |> assign(:posts, posts)
-     |> stream_insert(:posts, post, reset: true)}
+     |> assign(:notebooks, notebooks)
+     |> stream_insert(:notebooks, notebook, reset: true)}
   end
 
   def handle_event("unbookmark", %{"id" => id}, socket) do
-    post =
-      Amboseli.Blog.Post
+    notebook =
+      Amboseli.Blog.Notebook
       |> Ash.get!(id, actor: socket.assigns.current_user)
-      |> Amboseli.Blog.Post.unbookmark!(actor: socket.assigns.current_user)
+      |> Amboseli.Blog.Notebook.unbookmark!(actor: socket.assigns.current_user)
       |> Map.put(:bookmarked_by_user, false)
       |> Ash.load!([
         :like_count,
@@ -444,18 +450,19 @@ defmodule AmboseliWeb.PostLive.Index do
         }
       ])
 
-    posts = fetch_posts(socket, socket.assigns.current_user, socket.assigns.current_category)
+    notebooks =
+      fetch_notebooks(socket, socket.assigns.current_user, socket.assigns.current_category)
 
     {:noreply,
      socket
-     |> assign(:posts, posts)
-     |> stream_insert(:posts, post, reset: true)}
+     |> assign(:notebooks, notebooks)
+     |> stream_insert(:notebooks, notebook, reset: true)}
   end
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    post =
-      Ash.get!(Amboseli.Blog.Post, id, actor: socket.assigns.current_user)
+    notebook =
+      Ash.get!(Amboseli.Blog.Notebook, id, actor: socket.assigns.current_user)
       |> Ash.load!([
         :likes,
         :comments,
@@ -465,41 +472,41 @@ defmodule AmboseliWeb.PostLive.Index do
         :user
       ])
 
-    Ash.destroy!(post, actor: socket.assigns.current_user)
+    Ash.destroy!(notebook, actor: socket.assigns.current_user)
 
     {:noreply,
      socket
-     |> stream_delete(:posts, post)
-     |> put_flash(:info, "Post deleted successfully.")}
+     |> stream_delete(:notebooks, notebook)
+     |> put_flash(:info, "Notebook deleted successfully.")}
   end
 
   @impl true
   def handle_event("sort_by_popularity", _params, socket) do
-    posts =
-      fetch_posts(socket, socket.assigns.current_user, socket.assigns.current_category)
+    notebooks =
+      fetch_notebooks(socket, socket.assigns.current_user, socket.assigns.current_category)
       |> Enum.sort_by(& &1.popularity_score, &>=/2)
 
     {:noreply,
      socket
-     |> assign(:posts, posts)
-     |> stream(:posts, posts, reset: true)}
+     |> assign(:notebooks, notebooks)
+     |> stream(:notebooks, notebooks, reset: true)}
   end
 
   def handle_event("sort_by_latest", _params, socket) do
-    posts =
-      fetch_posts(socket, socket.assigns.current_user, socket.assigns.current_category)
+    notebooks =
+      fetch_notebooks(socket, socket.assigns.current_user, socket.assigns.current_category)
 
     # |> Enum.sort_by(& &1.inserted_at, &>=/2)
 
     {:noreply,
      socket
-     |> assign(:posts, posts)
-     |> stream(:posts, posts, reset: true)}
+     |> assign(:notebooks, notebooks)
+     |> stream(:notebooks, notebooks, reset: true)}
   end
 
-  defp fetch_posts(socket, current_user, category_id \\ nil) do
-    posts =
-      Amboseli.Blog.Post.list_public!(actor: current_user)
+  defp fetch_notebooks(socket, current_user, category_id \\ nil) do
+    notebooks =
+      Amboseli.Blog.Notebook.list_public!(actor: current_user)
       |> Ash.load!([
         :like_count,
         :comment_count,
@@ -520,15 +527,15 @@ defmodule AmboseliWeb.PostLive.Index do
         }
       ])
 
-    # IO.inspect(posts, label: "fetched posts")
+    # IO.inspect(notebooks, label: "fetched notebooks")
 
     case category_id do
       nil ->
-        posts
+        notebooks
 
       category_id ->
-        Enum.filter(posts, fn post ->
-          Enum.any?(post.categories_join_assoc, fn cat ->
+        Enum.filter(notebooks, fn notebook ->
+          Enum.any?(notebook.categories_join_assoc, fn cat ->
             cat.category_id == category_id
           end)
         end)
@@ -545,8 +552,8 @@ defmodule AmboseliWeb.PostLive.Index do
 
   defp apply_patch(socket) do
     case socket.assigns.current_category do
-      nil -> ~p"/posts"
-      category_id -> ~p"/posts/category/#{category_id}"
+      nil -> ~p"/notebooks"
+      category_id -> ~p"/notebooks/category/#{category_id}"
     end
   end
 end

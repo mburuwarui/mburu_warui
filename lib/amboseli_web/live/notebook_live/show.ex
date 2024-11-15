@@ -1,4 +1,4 @@
-defmodule AmboseliWeb.PostLive.Show do
+defmodule AmboseliWeb.NotebookLive.Show do
   use AmboseliWeb, :blog_view
 
   on_mount {AmboseliWeb.LiveUserAuth, :live_user_optional}
@@ -12,10 +12,10 @@ defmodule AmboseliWeb.PostLive.Show do
         <.header class="max-w-3xl mx-auto">
           <div class="flex justify-between items-baseline w-full">
             <div class="px-4 py-2 hover:text-yellow-900">
-              <.back navigate={~p"/posts"}>Back to notebooks</.back>
+              <.back navigate={~p"/notebooks"}>Back to notebooks</.back>
             </div>
-            <%= if @current_user == @post.user do %>
-              <.link patch={~p"/posts/#{@post}/show/edit"} phx-click={JS.push_focus()}>
+            <%= if @current_user == @notebook.user do %>
+              <.link patch={~p"/notebooks/#{@notebook}/show/edit"} phx-click={JS.push_focus()}>
                 <.button>
                   <.icon name="hero-pencil-square" class="mr-2 h-5 w-5" /> Edit Notebook
                 </.button>
@@ -24,20 +24,20 @@ defmodule AmboseliWeb.PostLive.Show do
           </div>
         </.header>
         <div class="max-w-3xl mx-auto py-8">
-          <div :if={Enum.any?(@post.pictures)} class="mb-8">
+          <div :if={Enum.any?(@notebook.pictures)} class="mb-8">
             <img
-              src={Enum.at(@post.pictures, -1).url}
-              alt={@post.title}
+              src={Enum.at(@notebook.pictures, -1).url}
+              alt={@notebook.title}
               class="w-full h-64 object-cover rounded-lg shadow-md"
             />
           </div>
 
           <h1 class="text-4xl font-extrabold text-center text-gray-900 my-14 dark:text-white">
-            <%= @post.title %>
+            <%= @notebook.title %>
           </h1>
 
           <div class="flex justify-between items-end">
-            <div :if={@profile && @profile.user_id == @post.user_id} class="flex">
+            <div :if={@profile && @profile.user_id == @notebook.user_id} class="flex">
               <img
                 class="object-cover object-center w-10 h-10 rounded-full"
                 src={@profile.avatar}
@@ -54,21 +54,25 @@ defmodule AmboseliWeb.PostLive.Show do
             </div>
 
             <div class="text-sm text-gray-700 dark:text-gray-200 flex flex-col items-end">
-              <%= @post.reading_time %> min read
+              <%= @notebook.reading_time %> min read
               <div
                 phx-hook="LocalTime"
-                id={"inserted_at-#{@post.inserted_at}"}
+                id={"inserted_at-#{@notebook.inserted_at}"}
                 class="hidden md:block invisible text-sm text-gray-700 dark:text-gray-200"
               >
-                <%= DateTime.to_string(@post.inserted_at) %>
+                <%= DateTime.to_string(@notebook.inserted_at) %>
               </div>
             </div>
           </div>
 
-          <.post_actions post={@post} current_user={@current_user} current_uri={@current_uri} />
+          <.notebook_actions
+            notebook={@notebook}
+            current_user={@current_user}
+            current_uri={@current_uri}
+          />
 
           <div class="prose prose-lg max-w-none mb-8 dark:prose-invert">
-            <%= MDEx.to_html!(@post.body,
+            <%= MDEx.to_html!(@notebook.body,
               features: [syntax_highlight_theme: "dracula"],
               extension: [
                 strikethrough: true,
@@ -76,7 +80,7 @@ defmodule AmboseliWeb.PostLive.Show do
                 table: true,
                 autolink: true,
                 tasklist: true,
-                header_ids: "post-",
+                header_ids: "notebook-",
                 footnotes: true,
                 shortcodes: true
               ],
@@ -98,16 +102,16 @@ defmodule AmboseliWeb.PostLive.Show do
           <div class="my-4">
             <h2 class="text-xl font-semibold mb-4">Categories</h2>
             <div class="flex flex-wrap gap-2">
-              <%= for category <- @post.categories_join_assoc do %>
-                <%= for post_category <- @categories do %>
-                  <%= if category.category_id == post_category.id do %>
-                    <.link navigate={~p"/posts/category/#{category.category_id}"}>
+              <%= for category <- @notebook.categories_join_assoc do %>
+                <%= for notebook_category <- @categories do %>
+                  <%= if category.category_id == notebook_category.id do %>
+                    <.link navigate={~p"/notebooks/category/#{category.category_id}"}>
                       <.badge
                         variant="outline"
                         class="border-yellow-400 bg-white text-yellow-500 bg-opacity-35 mb-2 justify-center"
                       >
                         <.icon name="hero-tag" class="mr-1 w-4 h-4" />
-                        <%= post_category.name %>
+                        <%= notebook_category.name %>
                       </.badge>
                     </.link>
                   <% end %>
@@ -118,13 +122,17 @@ defmodule AmboseliWeb.PostLive.Show do
         </div>
 
         <div class="max-w-3xl mx-auto">
-          <.post_actions post={@post} current_user={@current_user} current_uri={@current_uri} />
+          <.notebook_actions
+            notebook={@notebook}
+            current_user={@current_user}
+            current_uri={@current_uri}
+          />
         </div>
 
         <div class="flex my-8 justify-between max-w-3xl mx-auto items-end">
           <div class="">
-            <%= @post.comment_count %>
-            <%= if @post.comment_count == 1 do %>
+            <%= @notebook.comment_count %>
+            <%= if @notebook.comment_count == 1 do %>
               Comment
             <% else %>
               Comments
@@ -132,7 +140,7 @@ defmodule AmboseliWeb.PostLive.Show do
           </div>
 
           <%= if @current_user do %>
-            <.link patch={~p"/posts/#{@post}/comments/new"} phx-click={JS.push_focus()}>
+            <.link patch={~p"/notebooks/#{@notebook}/comments/new"} phx-click={JS.push_focus()}>
               <.button>New Comment</.button>
             </.link>
           <% else %>
@@ -143,12 +151,12 @@ defmodule AmboseliWeb.PostLive.Show do
         <.comment_tree
           stream={@streams.comments}
           current_user={@current_user}
-          post={@post}
+          notebook={@notebook}
           profile={@profile}
         />
 
         <div class="max-w-3xl mx-auto py-8 hover:text-yellow-900">
-          <.back navigate={~p"/posts"}>Back to notebooks</.back>
+          <.back navigate={~p"/notebooks"}>Back to notebooks</.back>
         </div>
       </div>
       <div class="lg:w-1/5 hidden lg:block">
@@ -161,15 +169,20 @@ defmodule AmboseliWeb.PostLive.Show do
       </div>
     </div>
 
-    <.modal :if={@live_action == :edit} id="post-modal" show on_cancel={JS.patch(~p"/posts/#{@post}")}>
+    <.modal
+      :if={@live_action == :edit}
+      id="notebook-modal"
+      show
+      on_cancel={JS.patch(~p"/notebooks/#{@notebook}")}
+    >
       <.live_component
-        module={AmboseliWeb.PostLive.FormComponent}
-        id={@post.id}
+        module={AmboseliWeb.NotebookLive.FormComponent}
+        id={@notebook.id}
         title={@page_title}
         action={@live_action}
         current_user={@current_user}
-        post={@post}
-        patch={~p"/posts/#{@post}"}
+        notebook={@notebook}
+        patch={~p"/notebooks/#{@notebook}"}
       />
     </.modal>
 
@@ -177,7 +190,7 @@ defmodule AmboseliWeb.PostLive.Show do
       :if={@live_action in [:new_comment, :edit_comment, :new_comment_child]}
       id="comment-modal"
       show
-      on_cancel={JS.patch(~p"/posts/#{@post}")}
+      on_cancel={JS.patch(~p"/notebooks/#{@notebook}")}
     >
       <.live_component
         module={AmboseliWeb.CommentLive.FormComponent}
@@ -185,10 +198,10 @@ defmodule AmboseliWeb.PostLive.Show do
         title={@page_title}
         current_user={@current_user}
         action={@live_action}
-        post={@post}
+        notebook={@notebook}
         comment={@comment}
         parent_comment={@parent_comment}
-        patch={~p"/posts/#{@post}"}
+        patch={~p"/notebooks/#{@notebook}"}
       />
     </.modal>
 
@@ -224,23 +237,23 @@ defmodule AmboseliWeb.PostLive.Show do
   end
 
   defp apply_action(socket, :show, %{"id" => id}) do
-    post =
-      Amboseli.Blog.Post
+    notebook =
+      Amboseli.Blog.Notebook
       |> Ash.get!(id, actor: socket.assigns.current_user)
-      |> Ash.load!(post_fields(socket))
+      |> Ash.load!(notebook_fields(socket))
 
-    # IO.inspect(post, label: "post")
+    # IO.inspect(notebook, label: "notebook")
 
     # Only increment page views if it's not a reconnection
     unless connected?(socket) do
-      Amboseli.Blog.Post.inc_page_views!(post,
+      Amboseli.Blog.Notebook.inc_page_views!(notebook,
         actor: socket.assigns.current_user,
         authorize?: false
       )
     end
 
     comments =
-      post.comments
+      notebook.comments
       |> Enum.map(fn comment ->
         comment
         |> Ash.load!([:child_comments, :user, :parent_comment])
@@ -253,14 +266,14 @@ defmodule AmboseliWeb.PostLive.Show do
     categories = Amboseli.Blog.Category.list_all!(actor: current_user)
 
     user =
-      post.user
+      notebook.user
       |> Ash.load!([:profile])
 
     # IO.inspect(user, label: "user")
 
     socket
-    |> assign(:page_title, "Show Post")
-    |> assign(:post, post)
+    |> assign(:page_title, "Show Notebook")
+    |> assign(:notebook, notebook)
     |> assign(:comments, comments)
     |> stream(:comments, comments, reset: true)
     |> assign(:categories, categories)
@@ -270,37 +283,37 @@ defmodule AmboseliWeb.PostLive.Show do
   defp apply_action(socket, :edit, %{"id" => id}) do
     current_user = socket.assigns.current_user
 
-    post =
-      Amboseli.Blog.Post
+    notebook =
+      Amboseli.Blog.Notebook
       |> Ash.get!(id, actor: current_user)
-      |> Ash.load!(post_fields(socket))
+      |> Ash.load!(notebook_fields(socket))
 
     categories = Amboseli.Blog.Category.list_all!(actor: current_user)
 
     socket
     |> assign(:page_title, "Edit Notebook")
-    |> stream(:comments, post.comments)
-    |> assign(:post, post)
+    |> stream(:comments, notebook.comments)
+    |> assign(:notebook, notebook)
     |> assign(:categories, categories)
   end
 
-  defp apply_action(socket, :new_comment, %{"id" => post_id}) do
+  defp apply_action(socket, :new_comment, %{"id" => notebook_id}) do
     current_user = socket.assigns.current_user
 
-    post =
-      Amboseli.Blog.Post
-      |> Ash.get!(post_id, actor: current_user)
-      |> Ash.load!(post_fields(socket))
+    notebook =
+      Amboseli.Blog.Notebook
+      |> Ash.get!(notebook_id, actor: current_user)
+      |> Ash.load!(notebook_fields(socket))
 
     categories = Amboseli.Blog.Category.list_all!(actor: current_user)
 
-    comments = post.comments
+    comments = notebook.comments
 
     socket
     |> assign(:page_title, "New Comment")
     |> assign(:comment, nil)
     |> assign(:parent_comment, nil)
-    |> assign(:post, post)
+    |> assign(:notebook, notebook)
     |> stream(:comments, comments)
     |> assign(:categories, categories)
   end
@@ -311,22 +324,22 @@ defmodule AmboseliWeb.PostLive.Show do
     parent_comment =
       Amboseli.Blog.Comment
       |> Ash.get!(id, actor: current_user)
-      |> Ash.load!([:post, :child_comments, :parent_comment])
+      |> Ash.load!([:notebook, :child_comments, :parent_comment])
 
     categories = Amboseli.Blog.Category.list_all!(actor: current_user)
 
-    post =
-      parent_comment.post
-      |> Ash.load!(post_fields(socket))
+    notebook =
+      parent_comment.notebook
+      |> Ash.load!(notebook_fields(socket))
 
-    comments = post.comments
+    comments = notebook.comments
 
     socket
     |> assign(:page_title, "New Comment")
     |> assign(:comment, nil)
     |> stream(:comments, comments)
     |> assign(:parent_comment, parent_comment)
-    |> assign(:post, post)
+    |> assign(:notebook, notebook)
     |> assign(:categories, categories)
   end
 
@@ -334,18 +347,18 @@ defmodule AmboseliWeb.PostLive.Show do
     comment =
       Amboseli.Blog.Comment
       |> Ash.get!(id, actor: socket.assigns.current_user)
-      |> Ash.load!([:post, :parent_comment])
+      |> Ash.load!([:notebook, :parent_comment])
 
-    post =
-      comment.post
-      |> Ash.load!(post_fields(socket))
+    notebook =
+      comment.notebook
+      |> Ash.load!(notebook_fields(socket))
 
     socket
     |> assign(:page_title, "Edit Comment")
-    |> stream(:comments, post.comments)
+    |> stream(:comments, notebook.comments)
     |> assign(:comment, comment)
     |> assign(:parent_comment, nil)
-    |> assign(:post, post)
+    |> assign(:notebook, notebook)
   end
 
   @impl true
@@ -353,93 +366,93 @@ defmodule AmboseliWeb.PostLive.Show do
     categories = Amboseli.Blog.Category.list_all!(actor: socket.assigns.current_user)
 
     comment =
-      comment |> Ash.load!([:user, :post, :child_comments, :parent_comment])
+      comment |> Ash.load!([:user, :notebook, :child_comments, :parent_comment])
 
-    post = comment.post |> Ash.load!([:comments])
+    notebook = comment.notebook |> Ash.load!([:comments])
 
     {:noreply,
      socket
      |> stream_insert(:comments, comment)
-     |> assign(comments: post.comments)
+     |> assign(comments: notebook.comments)
      |> assign(:categories, categories)}
   end
 
   @impl true
-  def handle_info({AmboseliWeb.PostLive.FormComponent, {:saved, updated_post}}, socket) do
+  def handle_info({AmboseliWeb.NotebookLive.FormComponent, {:saved, updated_notebook}}, socket) do
     categories = Amboseli.Blog.Category.list_all!(actor: socket.assigns.current_user)
 
-    post =
-      updated_post
-      |> Ash.load!(post_fields(socket))
+    notebook =
+      updated_notebook
+      |> Ash.load!(notebook_fields(socket))
 
-    comments = post.comments
+    comments = notebook.comments
 
     {:noreply,
      socket
      |> stream(:comments, comments)
      |> assign(:categories, categories)
-     |> assign(:post, post)}
+     |> assign(:notebook, notebook)}
   end
 
   @impl true
   def handle_event("like", _params, socket) do
-    post =
-      socket.assigns.post
-      |> Amboseli.Blog.Post.like!(actor: socket.assigns.current_user)
+    notebook =
+      socket.assigns.notebook
+      |> Amboseli.Blog.Notebook.like!(actor: socket.assigns.current_user)
       |> Map.put(:liked_by_user, true)
       |> Ash.load!([:like_count, :comments, :popularity_score, :comment_count])
 
-    comments = post.comments
+    comments = notebook.comments
 
     {:noreply,
      socket
-     |> assign(:post, post)
+     |> assign(:notebook, notebook)
      |> stream(:comments, comments)}
   end
 
   def handle_event("dislike", _params, socket) do
-    post =
-      socket.assigns.post
-      |> Amboseli.Blog.Post.dislike!(actor: socket.assigns.current_user)
+    notebook =
+      socket.assigns.notebook
+      |> Amboseli.Blog.Notebook.dislike!(actor: socket.assigns.current_user)
       |> Map.put(:liked_by_user, false)
       |> Ash.load!([:like_count, :comments, :popularity_score, :comment_count])
 
-    comments = post.comments
+    comments = notebook.comments
 
     {:noreply,
      socket
-     |> assign(:post, post)
+     |> assign(:notebook, notebook)
      |> stream(:comments, comments)}
   end
 
   @impl true
   def handle_event("bookmark", _params, socket) do
-    post =
-      socket.assigns.post
-      |> Amboseli.Blog.Post.bookmark!(actor: socket.assigns.current_user)
+    notebook =
+      socket.assigns.notebook
+      |> Amboseli.Blog.Notebook.bookmark!(actor: socket.assigns.current_user)
       |> Map.put(:bookmarked_by_user, true)
       |> Ash.load!([:bookmark_count, :comments, :popularity_score])
 
-    comments = post.comments
+    comments = notebook.comments
 
     {:noreply,
      socket
-     |> assign(:post, post)
+     |> assign(:notebook, notebook)
      |> stream(:comments, comments)}
   end
 
   def handle_event("unbookmark", _params, socket) do
-    post =
-      socket.assigns.post
-      |> Amboseli.Blog.Post.unbookmark!(actor: socket.assigns.current_user)
+    notebook =
+      socket.assigns.notebook
+      |> Amboseli.Blog.Notebook.unbookmark!(actor: socket.assigns.current_user)
       |> Map.put(:bookmarked_by_user, false)
       |> Ash.load!([:bookmark_count, :comments, :popularity_score])
 
-    comments = post.comments
+    comments = notebook.comments
 
     {:noreply,
      socket
-     |> assign(:post, post)
+     |> assign(:notebook, notebook)
      |> stream(:comments, comments)}
   end
 
@@ -447,21 +460,21 @@ defmodule AmboseliWeb.PostLive.Show do
   def handle_event("delete", %{"id" => id}, socket) do
     comment =
       Ash.get!(Amboseli.Blog.Comment, id, actor: socket.assigns.current_user)
-      |> Ash.load!([:post])
+      |> Ash.load!([:notebook])
 
     Ash.destroy!(comment, actor: socket.assigns.current_user)
 
-    post = comment.post |> Ash.load!(post_fields(socket))
+    notebook = comment.notebook |> Ash.load!(notebook_fields(socket))
 
     {:noreply,
      socket
      |> stream_delete(:comments, comment)
-     |> assign(:comments, post.comments)
-     |> assign(:post, post)
+     |> assign(:comments, notebook.comments)
+     |> assign(:notebook, notebook)
      |> put_flash(:info, "Comment deleted successfully.")}
   end
 
-  def post_fields(socket) do
+  def notebook_fields(socket) do
     [
       :like_count,
       :comment_count,
@@ -499,7 +512,13 @@ defmodule AmboseliWeb.PostLive.Show do
     assigns = assign(assigns, :id, id)
 
     ~H"""
-    <.comment id={@id} comment={@comment} current_user={@current_user} post={@post} profile={@profile}>
+    <.comment
+      id={@id}
+      comment={@comment}
+      current_user={@current_user}
+      notebook={@notebook}
+      profile={@profile}
+    >
       <div phx-update="stream" id="comments">
         <%= for {child_id, child_comment} <- @stream do %>
           <%= if child_comment.parent_comment_id == @comment.id do %>
@@ -529,7 +548,10 @@ defmodule AmboseliWeb.PostLive.Show do
             <%= @profile.first_name %>
           </span>
           <div :if={@current_user} class="flex items-center space-x-2 mt-2 sm:mt-0">
-            <.link patch={~p"/posts/#{@post}/comments/#{@comment}/new"} phx-click={JS.push_focus()}>
+            <.link
+              patch={~p"/notebooks/#{@notebook}/comments/#{@comment}/new"}
+              phx-click={JS.push_focus()}
+            >
               <.tooltip>
                 <Lucideicons.reply class="text-blue-400 w-4 h-4 sm:w-5 sm:h-5" />
                 <.tooltip_content class="bg-primary text-white dark:text-zinc-700" side="left">
@@ -549,7 +571,7 @@ defmodule AmboseliWeb.PostLive.Show do
                   <.menu_label>Actions</.menu_label>
                   <.menu_item>
                     <.link
-                      patch={~p"/posts/#{@post}/comments/#{@comment}/edit"}
+                      patch={~p"/notebooks/#{@notebook}/comments/#{@comment}/edit"}
                       phx-click={JS.push_focus()}
                       class="flex items-center space-x-2"
                     >
@@ -579,7 +601,7 @@ defmodule AmboseliWeb.PostLive.Show do
     """
   end
 
-  defp post_actions(assigns) do
+  defp notebook_actions(assigns) do
     ~H"""
     <.separator class="my-2" />
 
@@ -587,31 +609,31 @@ defmodule AmboseliWeb.PostLive.Show do
       <div class="flex gap-4 items-center">
         <%= if @current_user do %>
           <div class="flex gap-1 items-end">
-            <%= if @post.liked_by_user do %>
-              <button phx-click="dislike" phx-value-id={@post.id}>
+            <%= if @notebook.liked_by_user do %>
+              <button phx-click="dislike" phx-value-id={@notebook.id}>
                 <.icon name="hero-heart-solid" class="text-red-400" />
               </button>
             <% else %>
-              <button phx-click="like" phx-value-id={@post.id}>
+              <button phx-click="like" phx-value-id={@notebook.id}>
                 <.icon name="hero-heart" class="text-red-300" />
               </button>
             <% end %>
             <p class="text-sm text-gray-500 dark:text-gray-400">
-              <%= @post.like_count %>
+              <%= @notebook.like_count %>
             </p>
           </div>
           <div class="flex gap-1 items-end">
-            <%= if @post.bookmarked_by_user do %>
-              <button phx-click="unbookmark" phx-value-id={@post.id}>
+            <%= if @notebook.bookmarked_by_user do %>
+              <button phx-click="unbookmark" phx-value-id={@notebook.id}>
                 <.icon name="hero-bookmark-solid" class="text-blue-400" />
               </button>
             <% else %>
-              <button phx-click="bookmark" phx-value-id={@post.id}>
+              <button phx-click="bookmark" phx-value-id={@notebook.id}>
                 <.icon name="hero-bookmark" class="text-blue-500" />
               </button>
             <% end %>
             <p class="text-sm text-gray-500 dark:text-gray-400">
-              <%= @post.bookmark_count %>
+              <%= @notebook.bookmark_count %>
             </p>
           </div>
         <% else %>
@@ -620,7 +642,7 @@ defmodule AmboseliWeb.PostLive.Show do
               <.icon name="hero-heart" class="text-red-500" />
             </.link>
             <p class="text-sm text-gray-500 dark:text-gray-400">
-              <%= @post.like_count %>
+              <%= @notebook.like_count %>
             </p>
           </div>
           <div class="flex gap-1 items-end">
@@ -628,22 +650,22 @@ defmodule AmboseliWeb.PostLive.Show do
               <.icon name="hero-bookmark" class="text-blue-500" />
             </.link>
             <p class="text-sm text-gray-500 dark:text-gray-400">
-              <%= @post.bookmark_count %>
+              <%= @notebook.bookmark_count %>
             </p>
           </div>
         <% end %>
         <div
-          :if={@post.page_views > 0}
+          :if={@notebook.page_views > 0}
           class="flex gap-1 text-sm text-gray-500 dark:text-gray-200 items-end"
         >
           <.icon name="hero-eye" class="text-yellow-500" />
-          <%= @post.page_views %>
+          <%= @notebook.page_views %>
         </div>
       </div>
 
       <div class="flex gap-4 items-center">
         <a
-          href={"https://livebook.dev/run?url=#{URI.encode_www_form(@post.livemd_url)}"}
+          href={"https://livebook.dev/run?url=#{URI.encode_www_form(@notebook.livemd_url)}"}
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -665,7 +687,7 @@ defmodule AmboseliWeb.PostLive.Show do
               <.menu_group>
                 <.menu_item>
                   <a
-                    href={"https://twitter.com/intent/tweet?url=#{URI.encode_www_form("#{AmboseliWeb.Endpoint.url()}#{@current_uri}")}&text=#{URI.encode_www_form(@post.title)}"}
+                    href={"https://twitter.com/intent/tweet?url=#{URI.encode_www_form("#{AmboseliWeb.Endpoint.url()}#{@current_uri}")}&text=#{URI.encode_www_form(@notebook.title)}"}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="flex items-center"
@@ -676,7 +698,7 @@ defmodule AmboseliWeb.PostLive.Show do
                 </.menu_item>
                 <.menu_item>
                   <a
-                    href={"https://www.linkedin.com/shareArticle?mini=true&url=#{URI.encode_www_form("#{AmboseliWeb.Endpoint.url()}#{@current_uri}")}&title=#{URI.encode_www_form(@post.title)}"}
+                    href={"https://www.linkedin.com/shareArticle?mini=true&url=#{URI.encode_www_form("#{AmboseliWeb.Endpoint.url()}#{@current_uri}")}&title=#{URI.encode_www_form(@notebook.title)}"}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="flex items-center"
@@ -687,7 +709,7 @@ defmodule AmboseliWeb.PostLive.Show do
                 </.menu_item>
                 <.menu_item>
                   <a
-                    href={"https://www.reddit.com/submit?url=#{URI.encode_www_form("#{AmboseliWeb.Endpoint.url()}#{@current_uri}")}&title=#{URI.encode_www_form(@post.title)}"}
+                    href={"https://www.reddit.com/submit?url=#{URI.encode_www_form("#{AmboseliWeb.Endpoint.url()}#{@current_uri}")}&title=#{URI.encode_www_form(@notebook.title)}"}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="flex items-center"
@@ -709,7 +731,7 @@ defmodule AmboseliWeb.PostLive.Show do
                 </.menu_item>
                 <.menu_item>
                   <a
-                    href={"https://api.whatsapp.com/send?text=#{URI.encode_www_form(@post.title)}%20#{URI.encode_www_form("#{AmboseliWeb.Endpoint.url()}#{@current_uri}")}"}
+                    href={"https://api.whatsapp.com/send?text=#{URI.encode_www_form(@notebook.title)}%20#{URI.encode_www_form("#{AmboseliWeb.Endpoint.url()}#{@current_uri}")}"}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="flex items-center"

@@ -22,19 +22,23 @@ defmodule AmboseliWeb.SearchLive.SearchComponent do
           placeholder="Search for notebooks"
           autofocus="true"
         />
-        <.card :if={@posts} class="shadow-none rounded-none border-none" id="searchbox__results_list">
+        <.card
+          :if={@notebooks}
+          class="shadow-none rounded-none border-none"
+          id="searchbox__results_list"
+        >
           <.link
-            :for={post <- @posts}
-            navigate={~p"/posts/#{post}"}
+            :for={notebook <- @notebooks}
+            navigate={~p"/notebooks/#{notebook}"}
             class="focus:outline-none focus:bg-slate-100 focus:text-sky-800 bg-none dark:focus:text-sky-200 dark:focus:bg-zinc-700 dark:text-white text-sm rounded-md"
           >
             <.card_content class="flex flex-row my-2 gap-2 space-x-2 rounded-md px-4 py-2 bg-zinc-100 hover:bg-zinc-600 hover:text-white items-center dark:bg-zinc-600 dark:hover:bg-zinc-700">
               <img
-                src={post.pictures |> Enum.at(0) |> Map.get(:url)}
+                src={notebook.pictures |> Enum.at(0) |> Map.get(:url)}
                 class="w-10 h-10 rounded-md object-cover"
               />
 
-              <%= post.title %>
+              <%= notebook.title %>
             </.card_content>
           </.link>
         </.card>
@@ -55,29 +59,29 @@ defmodule AmboseliWeb.SearchLive.SearchComponent do
   def handle_event("search", %{"search" => %{"query" => ""}}, socket) do
     {:noreply,
      socket
-     |> assign(:posts, [])}
+     |> assign(:notebooks, [])}
   end
 
   @impl true
   def handle_event("search", %{"search" => %{"query" => query}}, socket) do
     search_query = "%#{query}%"
 
-    posts =
-      Amboseli.Blog.Post
+    notebooks =
+      Amboseli.Blog.Notebook
       |> order_by(asc: :title)
       |> where([p], ilike(p.title, ^search_query))
       |> limit(5)
       |> Amboseli.Repo.all()
-      |> Ash.load!(AmboseliWeb.PostLive.Show.post_fields(socket))
+      |> Ash.load!(AmboseliWeb.NotebookLive.Show.notebook_fields(socket))
 
     {:noreply,
      socket
-     |> assign(:posts, posts)}
+     |> assign(:notebooks, notebooks)}
   end
 
   defp assign_form(socket) do
     form =
-      AshPhoenix.Form.for_read(Amboseli.Blog.Post, :search_posts,
+      AshPhoenix.Form.for_read(Amboseli.Blog.Notebook, :search_notebooks,
         as: "search",
         actor: socket.assigns.current_user
       )

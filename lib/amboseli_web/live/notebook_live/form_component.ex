@@ -1,4 +1,4 @@
-defmodule AmboseliWeb.PostLive.FormComponent do
+defmodule AmboseliWeb.NotebookLive.FormComponent do
   use AmboseliWeb, :live_component
 
   on_mount {AmboseliWeb.LiveUserAuth, :live_user_required}
@@ -18,7 +18,7 @@ defmodule AmboseliWeb.PostLive.FormComponent do
 
       <.simple_form
         for={@form}
-        id="post-form"
+        id="notebook-form"
         phx-target={@myself}
         phx-change="validate"
         phx-auto-recover="recover"
@@ -45,8 +45,8 @@ defmodule AmboseliWeb.PostLive.FormComponent do
           <% end %>
         </div>
 
-        <.live_file_input upload={@uploads.post_picture} />
-        <%= for entry <- @uploads.post_picture.entries do %>
+        <.live_file_input upload={@uploads.notebook_picture} />
+        <%= for entry <- @uploads.notebook_picture.entries do %>
           <article class="upload-entry">
             <figure>
               <.live_img_preview entry={entry} />
@@ -64,14 +64,14 @@ defmodule AmboseliWeb.PostLive.FormComponent do
               &times;
             </button>
 
-            <%= for err <- upload_errors(@uploads.post_picture, entry) do %>
+            <%= for err <- upload_errors(@uploads.notebook_picture, entry) do %>
               <p class="alert alert-danger"><%= inspect(err) %></p>
             <% end %>
           </article>
         <% end %>
 
         <:actions>
-          <.button phx-disable-with="Saving...">Save Post</.button>
+          <.button phx-disable-with="Saving...">Save Notebook</.button>
         </:actions>
       </.simple_form>
     </div>
@@ -84,9 +84,9 @@ defmodule AmboseliWeb.PostLive.FormComponent do
      socket
      |> assign(assigns)
      |> assign(:available_categories, Amboseli.Blog.Category.list_all!())
-     |> assign(:selected_categories, get_selected_categories(assigns.post))
+     |> assign(:selected_categories, get_selected_categories(assigns.notebook))
      |> assign(:uploaded_files, [])
-     |> allow_upload(:post_picture,
+     |> allow_upload(:notebook_picture,
        accept: ~w(.jpg .jpeg .png),
        max_entries: 1,
        external: &presign_picture_upload/2
@@ -96,9 +96,9 @@ defmodule AmboseliWeb.PostLive.FormComponent do
   end
 
   @impl true
-  def handle_event("validate", %{"post" => post_params}, socket) do
+  def handle_event("validate", %{"notebook" => notebook_params}, socket) do
     categories =
-      case Map.get(post_params, "categories") do
+      case Map.get(notebook_params, "categories") do
         nil -> []
         categories when is_list(categories) -> categories
         categories when is_binary(categories) -> [categories]
@@ -112,13 +112,13 @@ defmodule AmboseliWeb.PostLive.FormComponent do
         end
       end)
 
-    post_params =
-      post_params
+    notebook_params =
+      notebook_params
       |> Map.put("categories", categories)
 
     form =
       socket.assigns.form
-      |> AshPhoenix.Form.validate(post_params)
+      |> AshPhoenix.Form.validate(notebook_params)
       |> AshPhoenix.Form.update_options(fn options ->
         Keyword.put(options, :selected_categories, socket.assigns.selected_categories)
       end)
@@ -127,9 +127,9 @@ defmodule AmboseliWeb.PostLive.FormComponent do
   end
 
   @impl true
-  def handle_event("recover", %{"post" => post_params}, socket) do
+  def handle_event("recover", %{"notebook" => notebook_params}, socket) do
     categories =
-      case Map.get(post_params, "categories") do
+      case Map.get(notebook_params, "categories") do
         nil -> []
         categories when is_list(categories) -> categories
         categories when is_binary(categories) -> [categories]
@@ -143,13 +143,13 @@ defmodule AmboseliWeb.PostLive.FormComponent do
         end
       end)
 
-    post_params =
-      post_params
+    notebook_params =
+      notebook_params
       |> Map.put("categories", categories)
 
     form =
       socket.assigns.form
-      |> AshPhoenix.Form.validate(post_params)
+      |> AshPhoenix.Form.validate(notebook_params)
       |> AshPhoenix.Form.update_options(fn options ->
         Keyword.put(options, :selected_categories, socket.assigns.selected_categories)
       end)
@@ -162,7 +162,7 @@ defmodule AmboseliWeb.PostLive.FormComponent do
 
   @impl true
   def handle_event("cancel-upload", %{"ref" => ref}, socket) do
-    {:noreply, cancel_upload(socket, :post_picture, ref)}
+    {:noreply, cancel_upload(socket, :notebook_picture, ref)}
   end
 
   @impl true
@@ -183,33 +183,33 @@ defmodule AmboseliWeb.PostLive.FormComponent do
   end
 
   @impl true
-  def handle_event("save", %{"post" => params}, socket) do
+  def handle_event("save", %{"notebook" => params}, socket) do
     uploaded_files =
-      consume_uploaded_entries(socket, :post_picture, fn %{key: key}, _entry ->
+      consume_uploaded_entries(socket, :notebook_picture, fn %{key: key}, _entry ->
         {:ok, "#{System.get_env("CLOUDFLARE_PUBLIC_URL")}/#{key}"}
       end)
 
-    post_params =
+    notebook_params =
       params
       |> Map.put("categories", Enum.map(socket.assigns.selected_categories, &%{"name" => &1}))
       |> Map.put("pictures", Enum.map(uploaded_files, &%{"url" => &1}))
 
-    case AshPhoenix.Form.submit(socket.assigns.form, params: post_params) do
-      {:ok, post} ->
-        livemd_url = generate_and_upload_livemd(post)
+    case AshPhoenix.Form.submit(socket.assigns.form, params: notebook_params) do
+      {:ok, notebook} ->
+        livemd_url = generate_and_upload_livemd(notebook)
 
-        _updated_post =
-          Amboseli.Blog.Post.update!(post, %{livemd_url: livemd_url},
+        _updated_notebook =
+          Amboseli.Blog.Notebook.update!(notebook, %{livemd_url: livemd_url},
             actor: socket.assigns.current_user
           )
 
-        notify_parent({:saved, post})
+        notify_parent({:saved, notebook})
 
         socket =
           socket
           |> put_flash(
             :info,
-            "Post #{if socket.assigns.post, do: "updated", else: "created"} successfully"
+            "Notebook #{if socket.assigns.notebook, do: "updated", else: "created"} successfully"
           )
           |> push_patch(to: socket.assigns.patch)
 
@@ -222,16 +222,16 @@ defmodule AmboseliWeb.PostLive.FormComponent do
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
 
-  defp assign_form(%{assigns: %{post: post}} = socket) do
+  defp assign_form(%{assigns: %{notebook: notebook}} = socket) do
     form =
-      if post do
-        AshPhoenix.Form.for_update(post, :update,
-          as: "post",
+      if notebook do
+        AshPhoenix.Form.for_update(notebook, :update,
+          as: "notebook",
           actor: socket.assigns.current_user
         )
       else
-        AshPhoenix.Form.for_create(Amboseli.Blog.Post, :create,
-          as: "post",
+        AshPhoenix.Form.for_create(Amboseli.Blog.Notebook, :create,
+          as: "notebook",
           actor: socket.assigns.current_user
         )
       end
@@ -241,7 +241,7 @@ defmodule AmboseliWeb.PostLive.FormComponent do
 
   defp presign_picture_upload(entry, socket) do
     filename = "#{entry.client_name}"
-    key = "public/post_pictures/#{Nanoid.generate()}-#{filename}"
+    key = "public/notebook_pictures/#{Nanoid.generate()}-#{filename}"
 
     config = %{
       region: "auto",
@@ -272,14 +272,14 @@ defmodule AmboseliWeb.PostLive.FormComponent do
   defp get_selected_categories(nil), do: []
   defp get_selected_categories(%{categories: %Ash.NotLoaded{}}), do: []
 
-  defp get_selected_categories(post) do
-    post.categories
+  defp get_selected_categories(notebook) do
+    notebook.categories
     |> Enum.map(& &1.name)
   end
 
-  defp generate_and_upload_livemd(post) do
-    livemd_content = generate_livemd_content(post)
-    filename = "#{post.id}.livemd"
+  defp generate_and_upload_livemd(notebook) do
+    livemd_content = generate_livemd_content(notebook)
+    filename = "#{notebook.id}.livemd"
     key = "public/notebooks/#{filename}"
 
     config = %{
@@ -302,17 +302,17 @@ defmodule AmboseliWeb.PostLive.FormComponent do
     "#{System.get_env("CLOUDFLARE_PUBLIC_URL")}/#{key}"
   end
 
-  def generate_livemd_content(post) do
+  def generate_livemd_content(notebook) do
     """
-    # #{post.title}
+    # #{notebook.title}
 
-    #{post.body}
+    #{notebook.body}
 
     ## Categories
-    #{Enum.map_join(post.categories, ", ", & &1.name)}
+    #{Enum.map_join(notebook.categories, ", ", & &1.name)}
 
     ## Pictures
-    #{Enum.map_join(post.pictures, "\n", fn picture -> "![](#{picture.url})" end)}
+    #{Enum.map_join(notebook.pictures, "\n", fn picture -> "![](#{picture.url})" end)}
     """
   end
 end

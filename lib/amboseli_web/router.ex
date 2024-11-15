@@ -47,19 +47,19 @@ defmodule AmboseliWeb.Router do
       live "/products/:id", ProductLive.Show, :show
       live "/products/:id/show/edit", ProductLive.Show, :edit
 
-      live "/posts", PostLive.Index, :index
-      live "/posts/new", PostLive.Index, :new
-      live "/posts/:id/edit", PostLive.Index, :edit
+      live "/notebooks", NotebookLive.Index, :index
+      live "/notebooks/new", NotebookLive.Index, :new
+      live "/notebooks/:id/edit", NotebookLive.Index, :edit
 
-      live "/posts/:id", PostLive.Show, :show
-      live "/posts/:id/show/edit", PostLive.Show, :edit
+      live "/notebooks/:id", NotebookLive.Show, :show
+      live "/notebooks/:id/show/edit", NotebookLive.Show, :edit
 
-      live "/posts/category/:category", PostLive.Index, :filter_by_category
-      live "/search", PostLive.Index, :search
+      live "/notebooks/category/:category", NotebookLive.Index, :filter_by_category
+      live "/search", NotebookLive.Index, :search
 
-      live "/posts/:id/comments/new", PostLive.Show, :new_comment
-      live "/posts/:id/comments/:c_id/new", PostLive.Show, :new_comment_child
-      live "/posts/:id/comments/:c_id/edit", PostLive.Show, :edit_comment
+      live "/notebooks/:id/comments/new", NotebookLive.Show, :new_comment
+      live "/notebooks/:id/comments/:c_id/new", NotebookLive.Show, :new_comment_child
+      live "/notebooks/:id/comments/:c_id/edit", NotebookLive.Show, :edit_comment
 
       live "/profile", ProfileLive.Index, :index
       live "/profile/new", ProfileLive.Index, :new
