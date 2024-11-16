@@ -60,6 +60,8 @@ defmodule Amboseli.Catalog.App do
       primary? true
       accept [:title, :description, :picture, :link, :visibility]
 
+      require_atomic? false
+
       argument :categories, {:array, :map}
 
       change manage_relationship(:categories,
