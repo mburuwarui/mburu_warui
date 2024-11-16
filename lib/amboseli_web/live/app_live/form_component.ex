@@ -82,7 +82,33 @@ defmodule AmboseliWeb.AppLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"app" => app_params}, socket) do
-    {:noreply, assign(socket, form: AshPhoenix.Form.validate(socket.assigns.form, app_params))}
+    categories =
+      case Map.get(app_params, "categories") do
+        nil -> []
+        categories when is_list(categories) -> categories
+        categories when is_binary(categories) -> [categories]
+        _ -> []
+      end
+      |> Enum.map(fn category ->
+        if is_binary(category) do
+          %{name: category}
+        else
+          category
+        end
+      end)
+
+    app_params =
+      app_params
+      |> Map.put("categories", categories)
+
+    form =
+      socket.assigns.form
+      |> AshPhoenix.Form.validate(app_params)
+      |> AshPhoenix.Form.update_options(fn options ->
+        Keyword.put(options, :selected_categories, socket.assigns.selected_categories)
+      end)
+
+    {:noreply, assign(socket, form: form)}
   end
 
   def handle_event("save", %{"app" => params}, socket) do

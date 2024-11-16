@@ -60,6 +60,7 @@ function darkExpected() {
 }
 
 function initDarkMode() {
+  console.log("initDarkMode called");
   // On page load or when changing themes, best to add inline in `head` to avoid FOUC
   if (darkExpected()) {
     document.documentElement.classList.add("dark");
@@ -176,6 +177,11 @@ window.addEventListener("DOMContentLoaded", () => {
   window.addEventListener(event, (info) => {
     initDarkMode();
   });
+});
+
+// Add event listener for phx:update
+window.addEventListener("phx:update", () => {
+  initDarkMode();
 });
 
 // Add event listener for toggle-darkmode
