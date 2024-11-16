@@ -20,6 +20,7 @@ defmodule AmboseliWeb.AppLive.FormComponent do
         <.input field={@form[:title]} type="text" label="Title" />
         <.input field={@form[:description]} type="text" label="Description" />
         <.input field={@form[:picture]} type="text" label="Picture" />
+        <.input field={@form[:link]} type="text" label="Link" />
         <.input
           field={@form[:visibility]}
           type="select"

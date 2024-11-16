@@ -42,14 +42,14 @@ defmodule Amboseli.Catalog.App do
 
     create :create do
       primary? true
-      accept [:title, :description, :picture, :visibility]
+      accept [:title, :description, :picture, :link, :visibility]
 
       change relate_actor(:user)
     end
 
     update :update do
       primary? true
-      accept [:title, :description, :picture, :visibility]
+      accept [:title, :description, :picture, :link, :visibility]
     end
 
     update :public_update do
@@ -118,6 +118,12 @@ defmodule Amboseli.Catalog.App do
       allow_nil? false
       public? true
       description "The picture of the app"
+    end
+
+    attribute :link, :string do
+      allow_nil? false
+      public? true
+      description "The link of the app"
     end
 
     attribute :visibility, :atom do

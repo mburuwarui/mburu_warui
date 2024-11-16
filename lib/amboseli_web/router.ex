@@ -77,6 +77,8 @@ defmodule AmboseliWeb.Router do
 
       live "/apps/:id", AppLive.Show, :show
       live "/apps/:id/show/edit", AppLive.Show, :edit
+
+      live "/apps/category/:category", AppLive.Index, :filter_by_category
     end
   end
 
