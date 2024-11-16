@@ -8,10 +8,10 @@ defmodule Amboseli.Blog.Category do
     notifiers: [Ash.Notifier.PubSub]
 
   json_api do
-    type "category"
+    type "blog_category"
 
     routes do
-      base "/categories"
+      base "/blog_categories"
 
       get :read
       post :create
@@ -19,7 +19,7 @@ defmodule Amboseli.Blog.Category do
   end
 
   graphql do
-    type :category
+    type :blog_category
 
     queries do
       get :get_category, :read
@@ -27,7 +27,7 @@ defmodule Amboseli.Blog.Category do
   end
 
   postgres do
-    table "categories"
+    table "blog_categories"
     repo Amboseli.Repo
   end
 

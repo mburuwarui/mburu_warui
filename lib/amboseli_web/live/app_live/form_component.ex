@@ -28,6 +28,23 @@ defmodule AmboseliWeb.AppLive.FormComponent do
           label="Visibility"
         />
 
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-zinc-700 dark:text-zinc-200">Categories</label>
+          <%= for category <- @available_categories do %>
+            <div class="flex items-center">
+              <.input
+                field={@form[:categories]}
+                type="checkbox"
+                checked={category.name in @selected_categories}
+                label={category.name}
+                phx-click="toggle_category"
+                phx-value-name={category.name}
+                phx-target={@myself}
+              />
+            </div>
+          <% end %>
+        </div>
+
         <:actions>
           <.button phx-disable-with="Saving...">Save App</.button>
         </:actions>
@@ -41,7 +58,26 @@ defmodule AmboseliWeb.AppLive.FormComponent do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:available_categories, Amboseli.Catalog.Category.list_all!())
+     |> assign(:selected_categories, get_selected_categories(assigns.app))
      |> assign_form()}
+  end
+
+  @impl true
+  def handle_event("toggle_category", %{"name" => category_name}, socket) do
+    selected_categories =
+      if category_name in socket.assigns.selected_categories do
+        List.delete(socket.assigns.selected_categories, category_name)
+      else
+        [category_name | socket.assigns.selected_categories]
+      end
+
+    form =
+      AshPhoenix.Form.update_options(socket.assigns.form, fn options ->
+        Keyword.put(options, :selected_categories, selected_categories)
+      end)
+
+    {:noreply, assign(socket, selected_categories: selected_categories, form: form)}
   end
 
   @impl true
@@ -49,7 +85,11 @@ defmodule AmboseliWeb.AppLive.FormComponent do
     {:noreply, assign(socket, form: AshPhoenix.Form.validate(socket.assigns.form, app_params))}
   end
 
-  def handle_event("save", %{"app" => app_params}, socket) do
+  def handle_event("save", %{"app" => params}, socket) do
+    app_params =
+      params
+      |> Map.put("categories", Enum.map(socket.assigns.selected_categories, &%{"name" => &1}))
+
     case AshPhoenix.Form.submit(socket.assigns.form, params: app_params) do
       {:ok, app} ->
         notify_parent({:saved, app})
@@ -80,5 +120,13 @@ defmodule AmboseliWeb.AppLive.FormComponent do
       end
 
     assign(socket, form: to_form(form))
+  end
+
+  defp get_selected_categories(nil), do: []
+  defp get_selected_categories(%{categories: %Ash.NotLoaded{}}), do: []
+
+  defp get_selected_categories(notebook) do
+    notebook.categories
+    |> Enum.map(& &1.name)
   end
 end

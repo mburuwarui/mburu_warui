@@ -87,7 +87,7 @@ defmodule AmboseliWeb.AppLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    categories = Amboseli.Blog.Category.list_all!()
+    categories = Amboseli.Catalog.Category.list_all!()
 
     {:ok,
      socket
