@@ -44,12 +44,28 @@ defmodule Amboseli.Catalog.App do
       primary? true
       accept [:title, :description, :picture, :link, :visibility]
 
+      argument :categories, {:array, :map} do
+        allow_nil? false
+      end
+
       change relate_actor(:user)
+
+      change manage_relationship(:categories,
+               type: :append_and_remove,
+               on_no_match: :create
+             )
     end
 
     update :update do
       primary? true
       accept [:title, :description, :picture, :link, :visibility]
+
+      argument :categories, {:array, :map}
+
+      change manage_relationship(:categories,
+               type: :append_and_remove,
+               on_no_match: :create
+             )
     end
 
     update :public_update do
@@ -137,6 +153,13 @@ defmodule Amboseli.Catalog.App do
 
   relationships do
     belongs_to :user, Amboseli.Accounts.User do
+      public? true
+    end
+
+    many_to_many :categories, Amboseli.Catalog.Category do
+      through Amboseli.Catalog.AppCategory
+      source_attribute_on_join_resource :app_id
+      destination_attribute_on_join_resource :category_id
       public? true
     end
   end
