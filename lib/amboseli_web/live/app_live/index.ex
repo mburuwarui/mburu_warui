@@ -91,7 +91,9 @@ defmodule AmboseliWeb.AppLive.Index do
 
     {:ok,
      socket
-     |> stream(:apps, Ash.read!(Amboseli.Catalog.App, actor: socket.assigns[:current_user]))
+     # |> stream(:apps, Ash.read!(Amboseli.Catalog.App, actor: socket.assigns[:current_user]))
+     |> assign(:apps, [])
+     |> stream(:apps, [])
      |> assign_new(:current_user, fn -> nil end)
      |> assign(:categories, categories)
      |> assign(:current_category, nil)}
@@ -105,9 +107,18 @@ defmodule AmboseliWeb.AppLive.Index do
   defp apply_action(socket, :edit, %{"id" => id}) do
     patch = apply_patch(socket)
 
+    app =
+      Ash.get!(Amboseli.Catalog.App, id, actor: socket.assigns.current_user)
+      |> Ash.load!([
+        :categories_join_assoc,
+        :categories,
+        :user,
+        :pictures
+      ])
+
     socket
     |> assign(:page_title, "Edit App")
-    |> assign(:app, Ash.get!(Amboseli.Catalog.App, id, actor: socket.assigns.current_user))
+    |> assign(:app, app)
     |> assign(:patch, patch)
   end
 
@@ -118,28 +129,50 @@ defmodule AmboseliWeb.AppLive.Index do
     |> assign(:page_title, "New App")
     |> assign(:app, nil)
     |> assign(:patch, patch)
+    |> stream(:apps, fetch_apps(socket, socket.assigns.current_user))
   end
 
   defp apply_action(socket, :index, _params) do
+    current_user = socket.assigns.current_user
+    apps = fetch_apps(socket, current_user)
+
     socket
     |> assign(:page_title, "Listing Apps")
     |> assign(:app, nil)
+    |> assign(:current_category, nil)
+    |> assign(:apps, apps)
+    |> stream(:apps, apps, reset: true)
   end
 
   defp apply_action(socket, :filter_by_category, %{"category" => category_id}) do
     category = Enum.find(socket.assigns.categories, &(&1.id == category_id))
-    notebooks = fetch_apps(socket.assigns.current_user, category_id)
+    apps = fetch_apps(socket.assigns.current_user, category_id)
 
     socket
     |> assign(:page_title, "Category: #{category.name}")
     |> assign(:current_category, category_id)
-    |> assign(:notebooks, notebooks)
-    |> stream(:notebooks, notebooks, reset: true)
+    |> assign(:apps, apps)
+    |> stream(:apps, apps, reset: true)
   end
 
   @impl true
   def handle_info({AmboseliWeb.AppLive.FormComponent, {:saved, app}}, socket) do
-    {:noreply, stream_insert(socket, :apps, app)}
+    categories = Amboseli.Catalog.Category.list_all!(actor: socket.assigns.current_user)
+
+    app =
+      app
+      |> Ash.load!([
+        :categories_join_assoc
+      ])
+
+    apps =
+      fetch_apps(socket, socket.assigns.current_category)
+
+    {:noreply,
+     socket
+     |> stream_insert(:app, app, at: 0, reset: true)
+     |> assign(:categories, categories)
+     |> assign(:apps, apps)}
   end
 
   @impl true
@@ -147,7 +180,10 @@ defmodule AmboseliWeb.AppLive.Index do
     app = Ash.get!(Amboseli.Catalog.App, id, actor: socket.assigns.current_user)
     Ash.destroy!(app, actor: socket.assigns.current_user)
 
-    {:noreply, stream_delete(socket, :apps, app)}
+    {:noreply,
+     socket
+     |> stream_delete(:apps, app)
+     |> put_flash(:info, "App deleted successfully.")}
   end
 
   defp fetch_apps(_socket, current_user, category_id \\ nil) do
@@ -156,10 +192,11 @@ defmodule AmboseliWeb.AppLive.Index do
       |> Ash.load!([
         :categories_join_assoc,
         :categories,
-        :user_email
+        :user_email,
+        :user
       ])
 
-    # IO.inspect(notebooks, label: "fetched notebooks")
+    IO.inspect(apps, label: "fetched apps")
 
     case category_id do
       nil ->

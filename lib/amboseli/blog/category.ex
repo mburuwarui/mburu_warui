@@ -22,7 +22,7 @@ defmodule Amboseli.Blog.Category do
     type :blog_category
 
     queries do
-      get :get_category, :read
+      get :get_blog_category, :read
     end
   end
 

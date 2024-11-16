@@ -22,7 +22,7 @@ defmodule Amboseli.Catalog.Category do
     type :catalog_category
 
     queries do
-      get :get_category, :read
+      get :get_catalog_category, :read
     end
   end
 
