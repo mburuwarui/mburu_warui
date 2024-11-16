@@ -18,11 +18,14 @@ defmodule AmboseliWeb.AppLive.Index do
                 patch={~p"/apps/category/#{category.id}"}
                 class="w-full sm:w-auto"
               >
-                <button class={[
-                  "w-full sm:w-auto px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",
-                  @current_category == category.id && "bg-indigo-600 text-white",
-                  @current_category != category.id && "text-gray-700 bg-gray-200 hover:bg-gray-300"
-                ]}>
+                <button
+                  class={[
+                    "w-full sm:w-auto px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",
+                    @current_category == category.id && "bg-indigo-600 text-white",
+                    @current_category != category.id && "text-gray-700 bg-gray-200 hover:bg-gray-300"
+                  ]}
+                  id={category.id}
+                >
                   <%= category.name %>
                 </button>
               </.link>
@@ -95,85 +98,83 @@ defmodule AmboseliWeb.AppLive.Index do
         </div>
       </.header>
 
-      <div
-        :for={{id, app} <- @streams.apps}
-        class="grid grid-cols-1 gap-10 mt-4 md:grid-cols-2 lg:grid-cols-3"
-        id={id}
-      >
-        <div class="card flex flex-col h-full group">
-          <div class="relative flex-shrink-0 overflow-hidden rounded-lg">
-            <.link navigate={~p"/apps/#{app}"}>
-              <div class="relative overflow-hidden rounded-lg group">
-                <img
-                  class="object-cover object-center w-full h-64 rounded-lg lg:h-80 transition-all duration-300 ease-in-out group-hover:scale-110"
-                  src={app.picture}
-                  alt={app.title}
-                />
-                <div class="absolute inset-0 bg-black bg-opacity-0 transition-opacity duration-300 group-hover:bg-opacity-20">
-                </div>
+      <div class="grid grid-cols-1 gap-10 mt-4 md:grid-cols-2 lg:grid-cols-3">
+        <div
+          :for={{id, app} <- @streams.apps}
+          id={id}
+          class="card relative flex-shrink-0 overflow-hidden rounded-lg"
+        >
+          <.link navigate={~p"/apps/#{app}"}>
+            <div class="relative overflow-hidden rounded-lg group">
+              <img
+                class="object-cover object-center w-full h-64 rounded-lg lg:h-80 transition-all duration-300 ease-in-out group-hover:scale-110"
+                src={app.picture}
+                alt={app.title}
+              />
+              <div class="absolute inset-0 bg-black bg-opacity-0 transition-opacity duration-300 group-hover:bg-opacity-20">
               </div>
-              <div
-                <h4
-                class="my-2 text-xl font-semibold text-gray-900 dark:text-zinc-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              >
-                <%= app.title %>
-              </div>
-
-              <p class="text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-300 transition-colors">
-                <%= app.description %>
-              </p>
-            </.link>
-            <div>
-              <div class="top-0 right-0 absolute m-4">
-                <div :for={category <- @categories} class="flex flex-col">
-                  <.badge
-                    :for={app_category <- app.categories_join_assoc}
-                    :if={app_category.category_id == category.id}
-                    variant="outline"
-                    class="border-white bg-white text-white bg-opacity-35 mb-2 justify-center"
-                  >
-                    <%= category.name %>
-                  </.badge>
-                </div>
-              </div>
-              <.dropdown_menu
-                :if={@current_user && @current_user.id == app.user_id}
-                class="absolute top-0 flex m-4"
-              >
-                <.dropdown_menu_trigger>
-                  <.button
-                    aria-haspopup="true"
-                    size="icon"
-                    variant="ghost"
-                    class="text-white hover:text-zinc-700"
-                  >
-                    <Lucideicons.ellipsis class="h-6 w-6" />
-                    <span class="sr-only">Toggle menu</span>
-                  </.button>
-                </.dropdown_menu_trigger>
-                <.dropdown_menu_content align="start">
-                  <.menu>
-                    <.menu_label>Actions</.menu_label>
-                    <.menu_item>
-                      <.link patch={~p"/apps/#{app}/edit"} class="flex items-center space-x-2">
-                        <.icon name="hero-pencil-square" class="text-blue-400 w-4 h-4 sm:w-5 sm:h-5" />
-                        <span class="text-sm sm:text-base">Edit</span>
-                      </.link>
-                    </.menu_item>
-                    <.menu_item>
-                      <.link
-                        phx-click={JS.push("delete", value: %{id: app.id}) |> hide("##{id}")}
-                        data-confirm="Are you sure?"
-                        class="flex items-center space-x-2"
-                      >
-                        <.icon name="hero-trash" class="text-red-400 w-4 h-4 sm:w-5 sm:h-5" />
-                        <span class="text-sm sm:text-base">Delete</span>
-                      </.link>
-                    </.menu_item>
-                  </.menu>
-                </.dropdown_menu_content>
-              </.dropdown_menu>
             </div>
+            <div
+              <h4
+              class="my-2 text-xl font-semibold text-gray-900 dark:text-zinc-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            >
+              <%= app.title %>
+            </div>
+
+            <p class="text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-300 transition-colors">
+              <%= app.description %>
+            </p>
+          </.link>
+          <div>
+            <div class="top-0 right-0 absolute m-4">
+              <div :for={category <- @categories} class="flex flex-col">
+                <.badge
+                  :for={app_category <- app.categories_join_assoc}
+                  :if={app_category.category_id == category.id}
+                  variant="outline"
+                  class="border-white bg-white text-white bg-opacity-35 mb-2 justify-center"
+                >
+                  <%= category.name %>
+                </.badge>
+              </div>
+            </div>
+            <.dropdown_menu
+              :if={@current_user && @current_user.id == app.user_id}
+              class="absolute top-0 flex m-4"
+            >
+              <.dropdown_menu_trigger>
+                <.button
+                  aria-haspopup="true"
+                  size="icon"
+                  variant="ghost"
+                  class="text-white hover:text-zinc-700"
+                >
+                  <Lucideicons.ellipsis class="h-6 w-6" />
+                  <span class="sr-only">Toggle menu</span>
+                </.button>
+              </.dropdown_menu_trigger>
+              <.dropdown_menu_content align="start">
+                <.menu>
+                  <.menu_label>Actions</.menu_label>
+                  <.menu_item>
+                    <.link patch={~p"/apps/#{app}/edit"} class="flex items-center space-x-2">
+                      <.icon name="hero-pencil-square" class="text-blue-400 w-4 h-4 sm:w-5 sm:h-5" />
+                      <span class="text-sm sm:text-base">Edit</span>
+                    </.link>
+                  </.menu_item>
+                  <.menu_item>
+                    <.link
+                      phx-click={JS.push("delete", value: %{id: app.id}) |> hide("##{id}")}
+                      data-confirm="Are you sure?"
+                      class="flex items-center space-x-2"
+                    >
+                      <.icon name="hero-trash" class="text-red-400 w-4 h-4 sm:w-5 sm:h-5" />
+                      <span class="text-sm sm:text-base">Delete</span>
+                    </.link>
+                  </.menu_item>
+                </.menu>
+              </.dropdown_menu_content>
+            </.dropdown_menu>
           </div>
         </div>
       </div>
@@ -293,7 +294,7 @@ defmodule AmboseliWeb.AppLive.Index do
 
     {:noreply,
      socket
-     |> stream_insert(:app, app, at: 0, reset: true)
+     |> stream_insert(:apps, app, at: 0, reset: true)
      |> assign(:categories, categories)
      |> assign(:apps, apps)}
   end
@@ -343,7 +344,7 @@ defmodule AmboseliWeb.AppLive.Index do
         :user
       ])
 
-    IO.inspect(apps, label: "fetched apps")
+    # IO.inspect(apps, label: "fetched apps")
 
     case category_id do
       nil ->

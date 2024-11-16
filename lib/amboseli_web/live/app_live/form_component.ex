@@ -35,6 +35,7 @@ defmodule AmboseliWeb.AppLive.FormComponent do
               <.input
                 field={@form[:categories]}
                 type="checkbox"
+                id={"app-categories-#{category.name}"}
                 checked={category.name in @selected_categories}
                 label={category.name}
                 phx-click="toggle_category"
