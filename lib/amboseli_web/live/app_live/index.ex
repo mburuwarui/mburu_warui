@@ -91,7 +91,6 @@ defmodule AmboseliWeb.AppLive.Index do
 
     {:ok,
      socket
-     # |> stream(:apps, Ash.read!(Amboseli.Catalog.App, actor: socket.assigns[:current_user]))
      |> assign(:apps, [])
      |> stream(:apps, [])
      |> assign_new(:current_user, fn -> nil end)
@@ -146,7 +145,7 @@ defmodule AmboseliWeb.AppLive.Index do
 
   defp apply_action(socket, :filter_by_category, %{"category" => category_id}) do
     category = Enum.find(socket.assigns.categories, &(&1.id == category_id))
-    apps = fetch_apps(socket.assigns.current_user, category_id)
+    apps = fetch_apps(socket, socket.assigns.current_user, category_id)
 
     socket
     |> assign(:page_title, "Category: #{category.name}")
@@ -166,7 +165,7 @@ defmodule AmboseliWeb.AppLive.Index do
       ])
 
     apps =
-      fetch_apps(socket, socket.assigns.current_category)
+      fetch_apps(socket, socket.assigns.current_user, socket.assigns.current_category)
 
     {:noreply,
      socket
