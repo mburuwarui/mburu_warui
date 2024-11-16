@@ -1,4 +1,4 @@
-# Amboseli
+# Mburu Warui Lab Journal
 
 My personal website.
 
