@@ -45,6 +45,7 @@ defmodule AmboseliWeb.AppSearchLive.SearchComponent do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:apps, [])
      |> assign_form()}
   end
 
