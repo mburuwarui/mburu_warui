@@ -79,7 +79,7 @@ defmodule AmboseliWeb.AppLive.Index do
             </.link>
             <div class="w-full sm:w-auto">
               <.button
-                phx-click={show_modal("search-modal")}
+                phx-click="open_search"
                 class="w-full sm:w-auto text-gray-500 bg-white hover:ring-gray-500 hover:text-white dark:text-zinc-900 dark:hover:text-zinc-700 ring-gray-300 items-center gap-10 rounded-md px-3 text-sm ring-1 transition focus:[&:not(:focus-visible)]:outline-none"
               >
                 <div class="flex items-center gap-2">
@@ -102,7 +102,7 @@ defmodule AmboseliWeb.AppLive.Index do
       >
         <div class="card flex flex-col h-full group">
           <div class="relative flex-shrink-0 overflow-hidden rounded-lg">
-            <.link href={app.link}>
+            <.link navigate={~p"/apps/#{app}"}>
               <div class="relative overflow-hidden rounded-lg group">
                 <img
                   class="object-cover object-center w-full h-64 rounded-lg lg:h-80 transition-all duration-300 ease-in-out group-hover:scale-110"
@@ -191,21 +191,20 @@ defmodule AmboseliWeb.AppLive.Index do
       />
     </.modal>
 
-    <.dialog id="search-modal" on_cancel={hide_modal("search-modal")} class="w-[700px]">
-      <.dialog_header>
-        <.dialog_title>Search Notebooks</.dialog_title>
-      </.dialog_header>
-
-      <div class="py-4">
-        <.live_component
-          module={AmboseliWeb.AppSearchLive.SearchComponent}
-          id={:search}
-          title={@page_title}
-          current_user={@current_user}
-          apps={@apps}
-        />
-      </div>
-    </.dialog>
+    <.search_modal
+      :if={@show_search_modal}
+      id="search-notebook-modal"
+      show
+      on_cancel={JS.push("close_search")}
+    >
+      <.live_component
+        module={AmboseliWeb.AppSearchLive.SearchComponent}
+        id={:search}
+        title={@page_title}
+        current_user={@current_user}
+        apps={@apps}
+      />
+    </.search_modal>
     """
   end
 
@@ -219,7 +218,8 @@ defmodule AmboseliWeb.AppLive.Index do
      |> stream(:apps, [])
      |> assign_new(:current_user, fn -> nil end)
      |> assign(:categories, categories)
-     |> assign(:current_category, nil)}
+     |> assign(:current_category, nil)
+     |> assign(:show_search_modal, false)}
   end
 
   @impl true
@@ -296,6 +296,30 @@ defmodule AmboseliWeb.AppLive.Index do
      |> stream_insert(:app, app, at: 0, reset: true)
      |> assign(:categories, categories)
      |> assign(:apps, apps)}
+  end
+
+  def handle_event("open_search", _params, socket) do
+    apps = socket.assigns.apps
+    current_category = socket.assigns.current_category
+
+    {:noreply,
+     socket
+     |> assign(:page_title, "Search")
+     |> stream(:apps, apps, reset: true)
+     |> assign(:current_category, current_category)
+     |> assign(:show_search_modal, true)}
+  end
+
+  def handle_event("close_search", _params, socket) do
+    apps = socket.assigns.apps
+    current_category = socket.assigns.current_category
+
+    {:noreply,
+     socket
+     |> assign(:page_title, "Listing Apps")
+     |> stream(:apps, apps, reset: true)
+     |> assign(:current_category, current_category)
+     |> assign(:show_search_modal, false)}
   end
 
   @impl true

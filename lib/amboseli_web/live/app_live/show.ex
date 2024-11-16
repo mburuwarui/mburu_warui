@@ -4,32 +4,34 @@ defmodule AmboseliWeb.AppLive.Show do
   @impl true
   def render(assigns) do
     ~H"""
-    <.header>
-      App <%= @app.id %>
-      <:subtitle>This is a app record from your database.</:subtitle>
+    <section class="container px-6 py-8 mx-auto lg:py-16 max-w-3xl">
+      <.header>
+        App <%= @app.id %>
+        <:subtitle>This is a app record from your database.</:subtitle>
 
-      <:actions>
-        <.link patch={~p"/apps/#{@app}/show/edit"} phx-click={JS.push_focus()}>
-          <.button>Edit app</.button>
-        </.link>
-      </:actions>
-    </.header>
+        <:actions>
+          <.link patch={~p"/apps/#{@app}/show/edit"} phx-click={JS.push_focus()}>
+            <.button>Edit app</.button>
+          </.link>
+        </:actions>
+      </.header>
 
-    <.list>
-      <:item title="Id"><%= @app.id %></:item>
+      <.list>
+        <:item title="Id"><%= @app.id %></:item>
 
-      <:item title="Title"><%= @app.title %></:item>
+        <:item title="Title"><%= @app.title %></:item>
 
-      <:item title="Description"><%= @app.description %></:item>
+        <:item title="Description"><%= @app.description %></:item>
 
-      <:item title="Picture"><%= @app.picture %></:item>
+        <:item title="Picture"><%= @app.picture %></:item>
 
-      <:item title="Visibility"><%= @app.visibility %></:item>
+        <:item title="Visibility"><%= @app.visibility %></:item>
 
-      <:item title="User"><%= @app.user_id %></:item>
-    </.list>
+        <:item title="User"><%= @app.user_id %></:item>
+      </.list>
 
-    <.back navigate={~p"/apps"}>Back to apps</.back>
+      <.back navigate={~p"/apps"}>Back to apps</.back>
+    </section>
 
     <.modal :if={@live_action == :edit} id="app-modal" show on_cancel={JS.patch(~p"/apps/#{@app}")}>
       <.live_component

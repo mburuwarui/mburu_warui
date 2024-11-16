@@ -112,6 +112,9 @@ defmodule AmboseliWeb do
       import AmboseliWeb.Component.Separator
       import AmboseliWeb.Component.Card
       import AmboseliWeb.Component.Dialog
+      # import AmboseliWeb.Component.Input
+      import AmboseliWeb.Component.Form
+      import AmboseliWeb.Component.Label
 
       use Gettext, backend: AmboseliWeb.Gettext
 

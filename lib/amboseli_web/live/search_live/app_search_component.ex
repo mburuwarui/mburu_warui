@@ -15,13 +15,7 @@ defmodule AmboseliWeb.AppSearchLive.SearchComponent do
         phx-debounce="300"
         phx-hook="SearchBar"
       >
-        <.input
-          field={@form[:query]}
-          type="search"
-          id="search-input"
-          placeholder="Search for apps"
-          autofocus="true"
-        />
+        <.input field={@form[:query]} type="search" id="search-input" placeholder="Search for apps" />
         <.card :if={@apps} class="shadow-none rounded-none border-none" id="searchbox__results_list">
           <.link
             :for={app <- @apps}

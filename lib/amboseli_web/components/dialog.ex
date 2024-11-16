@@ -145,6 +145,17 @@ defmodule AmboseliWeb.Component.Dialog do
   attr :class, :string, default: nil
   slot :inner_block, required: true
 
+  def dialog_content(assigns) do
+    ~H"""
+    <div class={classes(["p-6", @class])}>
+      <%= render_slot(@inner_block) %>
+    </div>
+    """
+  end
+
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+
   def dialog_footer(assigns) do
     ~H"""
     <div class={classes(["flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", @class])}>
