@@ -10,7 +10,7 @@ defmodule AmboseliWeb.HomeLive.Index do
           <h1 class="text-4xl font-semibold text-white md:text-6xl">Mburu Warui</h1>
 
           <p class="mt-6 text-lg leading-5 text-white">
-            Software Engineer & Architect of Scalable Financial Applications
+            Software Engineer & Architect of Scalable OLTP Applications
           </p>
 
           <a href="#about" class="mt-8 cursor-pointer animate-bounce">
