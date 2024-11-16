@@ -52,7 +52,7 @@ defmodule AmboseliWeb.CoreComponents do
     >
       <div
         id={"#{@id}-bg"}
-        class="bg-zinc-50/90 fixed inset-0 transition-opacity dark:bg-zinc-700/90"
+        class="bg-zinc-900/90 fixed inset-0 transition-opacity duration-75 dark:bg-zinc-700/90"
         aria-hidden="true"
       />
       <div
@@ -70,7 +70,7 @@ defmodule AmboseliWeb.CoreComponents do
               phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
               phx-key="escape"
               phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
-              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-2xl bg-white p-14 shadow-lg ring-1 transition duration-75 dark:bg-zinc-800 dark:shadow-zinc-800/10"
+              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-lg bg-white p-14 shadow-lg ring-1 transition duration-75 dark:bg-zinc-800 dark:shadow-zinc-800/10"
             >
               <div class="absolute top-6 right-5">
                 <button
@@ -109,7 +109,7 @@ defmodule AmboseliWeb.CoreComponents do
     >
       <div
         id={"#{@id}-bg"}
-        class="fixed inset-0 bg-zinc-50/90 transition-opacity duration-75 dark:bg-zinc-700/90"
+        class="fixed inset-0 bg-zinc-900/90 transition-opacity duration-75 dark:bg-zinc-700/90"
         aria-hidden="true"
       />
       <div
@@ -127,7 +127,7 @@ defmodule AmboseliWeb.CoreComponents do
               phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
               phx-key="escape"
               phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
-              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-2xl bg-white p-1 shadow-lg ring-1 transition duration-75 dark:bg-zinc-800 dark:shadow-zinc-800/10"
+              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-lg bg-white p-1 shadow-lg ring-1 transition duration-75 dark:bg-zinc-800 dark:shadow-zinc-800/10"
             >
               <div id={"#{@id}-content"}>
                 <%= render_slot(@inner_block) %>
@@ -156,7 +156,7 @@ defmodule AmboseliWeb.CoreComponents do
     >
       <div
         id={"#{@id}-bg"}
-        class="bg-zinc-50/90 fixed inset-0 transition-opacity dark:bg-zinc-700/90"
+        class="bg-zinc-900/90 fixed inset-0 transition-opacity duration-75 dark:bg-zinc-700/90"
         aria-hidden="true"
       />
       <div
@@ -174,7 +174,7 @@ defmodule AmboseliWeb.CoreComponents do
               phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
               phx-key="escape"
               phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
-              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-2xl bg-white p-14 shadow-lg ring-1 transition duration-75 dark:bg-zinc-800 dark:ring-zinc-700/10 dark:shadow-zinc-800/10"
+              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-lg bg-white p-14 shadow-lg ring-1 transition duration-75 dark:bg-zinc-800 dark:ring-zinc-700/10 dark:shadow-zinc-800/10"
             >
               <div class="absolute top-6 right-5">
                 <button
