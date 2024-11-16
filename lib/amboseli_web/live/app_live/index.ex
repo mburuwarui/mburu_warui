@@ -6,43 +6,93 @@ defmodule AmboseliWeb.AppLive.Index do
     ~H"""
     <section class="container px-6 py-8 mx-auto lg:py-16">
       <.header>
-        <div class="w-full text-center mb-4 sm:mb-10">
-          <h1 class="text-4xl font-extrabold dark:text-white">Explore My Expertise</h1>
-        </div>
-      </.header>
-      <div class="m-auto max-w-3xl">
         <.header>
-          <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-            <.link
-              :for={category <- @categories}
-              patch={~p"/apps/category/#{category.id}"}
-              class="w-full sm:w-auto"
-            >
-              <button class={[
-                "w-full sm:w-auto px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",
-                @current_category == category.id && "bg-indigo-600 text-white",
-                @current_category != category.id && "text-gray-700 bg-gray-200 hover:bg-gray-300"
-              ]}>
-                <%= category.name %>
-              </button>
-            </.link>
-            <.link patch={~p"/apps"} class="w-full sm:w-auto">
-              <button class={[
-                "w-full sm:w-auto px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",
-                @current_category == nil && "bg-indigo-600 text-white",
-                @current_category != nil && "text-gray-700 bg-gray-200 hover:bg-gray-300"
-              ]}>
-                All Categories
-              </button>
-            </.link>
+          <div class="w-full text-center mb-4 sm:mb-10">
+            <h1 class="text-4xl font-extrabold dark:text-white">Explore My Expertise</h1>
           </div>
-          <:actions>
-            <.link patch={~p"/apps/new"}>
-              <.button>New App</.button>
-            </.link>
-          </:actions>
+
+          <div class="py-4 flex sm:flex-row flex-col justify-between gap-4 items-center">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <div class="flex flex-wrap gap-2 w-full sm:w-auto">
+                <.link
+                  :for={category <- @categories}
+                  patch={~p"/apps/category/#{category.id}"}
+                  class="w-full sm:w-auto"
+                >
+                  <button class={[
+                    "w-full sm:w-auto px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",
+                    @current_category == category.id && "bg-indigo-600 text-white",
+                    @current_category != category.id && "text-gray-700 bg-gray-200 hover:bg-gray-300"
+                  ]}>
+                    <%= category.name %>
+                  </button>
+                </.link>
+                <.link patch={~p"/apps"} class="w-full sm:w-auto">
+                  <button class={[
+                    "w-full sm:w-auto px-4 py-2 rounded-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500",
+                    @current_category == nil && "bg-indigo-600 text-white",
+                    @current_category != nil && "text-gray-700 bg-gray-200 hover:bg-gray-300"
+                  ]}>
+                    All Categories
+                  </button>
+                </.link>
+              </div>
+
+              <.dropdown_menu class="w-full sm:w-auto">
+                <.dropdown_menu_trigger>
+                  <.button
+                    aria-haspopup="true"
+                    variant="outline"
+                    class="w-full sm:w-auto items-center gap-2 dark:text-white"
+                  >
+                    <.icon name="hero-bars-3-bottom-left" class="h-6 w-6" />
+                    <span>Sort by</span>
+                  </.button>
+                </.dropdown_menu_trigger>
+                <.dropdown_menu_content align="center">
+                  <.menu>
+                    <.menu_item class="justify-center">
+                      <.link phx-click="sort_by_latest">
+                        Latest
+                      </.link>
+                    </.menu_item>
+                    <.menu_item class="justify-center">
+                      <.link phx-click="sort_by_popularity">
+                        Popular
+                      </.link>
+                    </.menu_item>
+                  </.menu>
+                </.dropdown_menu_content>
+              </.dropdown_menu>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+              <.link
+                :if={
+                  (@current_user && @current_user.role == :author) ||
+                    (@current_user && @current_user.role == :admin)
+                }
+                patch={~p"/apps/new"}
+                class="w-full sm:w-auto"
+              >
+                <.button class="w-full sm:w-auto">
+                  <.icon name="hero-pencil" class="mr-2 h-5 w-5" /> New App
+                </.button>
+              </.link>
+              <.link patch={~p"/search"} class="w-full sm:w-auto">
+                <.button class="w-full sm:w-auto text-gray-500 bg-white hover:ring-gray-500 hover:text-white dark:text-zinc-900 dark:hover:text-zinc-700 ring-gray-300 items-center gap-10 rounded-md px-3 text-sm ring-1 transition focus:[&:not(:focus-visible)]:outline-none">
+                  <div class="flex items-center gap-2">
+                    <Lucideicons.search class="h-4 w-4" />
+                    <span class="flex-grow text-left">Find apps</span>
+                  </div>
+                  <kbd class="hidden sm:inline-flex text-3xs opacity-80">
+                    <kbd class="font-sans">⌘</kbd><kbd class="font-sans">K</kbd>
+                  </kbd>
+                </.button>
+              </.link>
+            </div>
+          </div>
         </.header>
-      </div>
+      </.header>
 
       <div
         :for={{id, app} <- @streams.apps}
