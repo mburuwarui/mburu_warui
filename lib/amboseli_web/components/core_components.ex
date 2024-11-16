@@ -45,8 +45,8 @@ defmodule AmboseliWeb.CoreComponents do
     ~H"""
     <div
       id={@id}
-      phx-mounted={@show && show_modal(@id)}
-      phx-remove={hide_modal(@id)}
+      phx-mounted={@show && show_modal_core(@id)}
+      phx-remove={hide_modal_core(@id)}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
       class="relative z-50 hidden"
     >
@@ -102,8 +102,8 @@ defmodule AmboseliWeb.CoreComponents do
     ~H"""
     <div
       id={@id}
-      phx-mounted={@show && show_modal(@id)}
-      phx-remove={hide_modal(@id)}
+      phx-mounted={@show && show_modal_core(@id)}
+      phx-remove={hide_modal_core(@id)}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
       class="relative z-50 hidden"
     >
@@ -149,8 +149,8 @@ defmodule AmboseliWeb.CoreComponents do
     ~H"""
     <div
       id={@id}
-      phx-mounted={@show && show_modal(@id)}
-      phx-remove={hide_modal(@id)}
+      phx-mounted={@show && show_modal_core(@id)}
+      phx-remove={hide_modal_core(@id)}
       data-cancel={JS.exec(@on_cancel, "phx-remove")}
       class="relative z-50 hidden"
     >
@@ -786,7 +786,7 @@ defmodule AmboseliWeb.CoreComponents do
     )
   end
 
-  def show_modal(js \\ %JS{}, id) when is_binary(id) do
+  def show_modal_core(js \\ %JS{}, id) when is_binary(id) do
     js
     |> JS.show(to: "##{id}")
     |> JS.show(
@@ -798,7 +798,7 @@ defmodule AmboseliWeb.CoreComponents do
     |> JS.focus_first(to: "##{id}-content")
   end
 
-  def hide_modal(js \\ %JS{}, id) do
+  def hide_modal_core(js \\ %JS{}, id) do
     js
     |> JS.hide(
       to: "##{id}-bg",

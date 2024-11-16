@@ -111,6 +111,7 @@ defmodule AmboseliWeb do
       import AmboseliWeb.Component.DropdownMenu
       import AmboseliWeb.Component.Separator
       import AmboseliWeb.Component.Card
+      import AmboseliWeb.Component.Dialog
 
       use Gettext, backend: AmboseliWeb.Gettext
 

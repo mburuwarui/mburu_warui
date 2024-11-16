@@ -77,6 +77,18 @@ defmodule Amboseli.Catalog.App do
     read :list_public do
       prepare build(sort: [updated_at: :desc], filter: expr(visibility == :public))
     end
+
+    read :search_apps do
+      argument :query, :string do
+        allow_nil? false
+      end
+
+      prepare build(
+                filter: [title: arg(:query)],
+                sort: [inserted_at: :desc],
+                limit: 5
+              )
+    end
   end
 
   policies do

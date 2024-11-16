@@ -1,4 +1,4 @@
-defmodule AmboseliWeb.SearchLive.SearchComponent do
+defmodule AmboseliWeb.NoteSearchLive.SearchComponent do
   require Ash.Query
   use AmboseliWeb, :live_component
 

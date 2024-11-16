@@ -263,7 +263,7 @@ defmodule AmboseliWeb.NotebookLive.Index do
       on_cancel={JS.patch(@patch)}
     >
       <.live_component
-        module={AmboseliWeb.SearchLive.SearchComponent}
+        module={AmboseliWeb.NoteSearchLive.SearchComponent}
         id={:search}
         title={@page_title}
         current_user={@current_user}

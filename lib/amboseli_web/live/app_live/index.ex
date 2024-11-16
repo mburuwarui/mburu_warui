@@ -77,8 +77,11 @@ defmodule AmboseliWeb.AppLive.Index do
                 <.icon name="hero-pencil" class="mr-2 h-5 w-5" /> New App
               </.button>
             </.link>
-            <.link patch={~p"/search"} class="w-full sm:w-auto">
-              <.button class="w-full sm:w-auto text-gray-500 bg-white hover:ring-gray-500 hover:text-white dark:text-zinc-900 dark:hover:text-zinc-700 ring-gray-300 items-center gap-10 rounded-md px-3 text-sm ring-1 transition focus:[&:not(:focus-visible)]:outline-none">
+            <div class="w-full sm:w-auto">
+              <.button
+                phx-click={show_modal("search-modal")}
+                class="w-full sm:w-auto text-gray-500 bg-white hover:ring-gray-500 hover:text-white dark:text-zinc-900 dark:hover:text-zinc-700 ring-gray-300 items-center gap-10 rounded-md px-3 text-sm ring-1 transition focus:[&:not(:focus-visible)]:outline-none"
+              >
                 <div class="flex items-center gap-2">
                   <Lucideicons.search class="h-4 w-4" />
                   <span class="flex-grow text-left">Find apps</span>
@@ -87,7 +90,7 @@ defmodule AmboseliWeb.AppLive.Index do
                   <kbd class="font-sans">⌘</kbd><kbd class="font-sans">K</kbd>
                 </kbd>
               </.button>
-            </.link>
+            </div>
           </div>
         </div>
       </.header>
@@ -187,6 +190,22 @@ defmodule AmboseliWeb.AppLive.Index do
         patch={~p"/apps"}
       />
     </.modal>
+
+    <.dialog id="search-modal" on_cancel={hide_modal("search-modal")} class="w-[700px]">
+      <.dialog_header>
+        <.dialog_title>Search Notebooks</.dialog_title>
+      </.dialog_header>
+
+      <div class="py-4">
+        <.live_component
+          module={AmboseliWeb.AppSearchLive.SearchComponent}
+          id={:search}
+          title={@page_title}
+          current_user={@current_user}
+          apps={@apps}
+        />
+      </div>
+    </.dialog>
     """
   end
 
