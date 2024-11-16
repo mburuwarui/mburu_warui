@@ -6,7 +6,7 @@ defmodule AmboseliWeb.NotebookLive.Index do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-7xl">
+    <section class="container px-6 py-8 mx-auto lg:py-16">
       <.header>
         <div class="w-full text-center mb-4 sm:mb-10">
           <h1 class="text-4xl font-extrabold dark:text-white">Notebooks</h1>
@@ -242,7 +242,7 @@ defmodule AmboseliWeb.NotebookLive.Index do
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
     <.modal :if={@live_action in [:new, :edit]} id="notebook-modal" show on_cancel={JS.patch(@patch)}>
       <.live_component
