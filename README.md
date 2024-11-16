@@ -1,5 +1,13 @@
 # Mburu Warui Lab Journal
 
+<!--toc:start-->
+
+- [Mburu Warui Lab Journal](#mburu-warui-lab-journal)
+  - [Learn more](#learn-more)
+  - [iex update user role](#iex-update-user-role)
+  - [iex bulk create products](#iex-bulk-create-products)
+  <!--toc:end-->
+
 My personal website.
 
 To start your Phoenix server:
