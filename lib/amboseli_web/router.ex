@@ -59,7 +59,6 @@ defmodule AmboseliWeb.Router do
       live "/notebooks/:id/show/edit", NotebookLive.Show, :edit
 
       live "/notebooks/category/:category", NotebookLive.Index, :filter_by_category
-      live "/search", NotebookLive.Index, :search
 
       live "/notebooks/:id/comments/new", NotebookLive.Show, :new_comment
       live "/notebooks/:id/comments/:c_id/new", NotebookLive.Show, :new_comment_child
