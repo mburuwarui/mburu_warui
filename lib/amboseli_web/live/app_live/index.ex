@@ -40,32 +40,32 @@ defmodule AmboseliWeb.AppLive.Index do
               </.link>
             </div>
 
-            <.dropdown_menu class="w-full sm:w-auto">
-              <.dropdown_menu_trigger>
-                <.button
-                  aria-haspopup="true"
-                  variant="outline"
-                  class="w-full sm:w-auto items-center gap-2 dark:text-white"
-                >
-                  <.icon name="hero-bars-3-bottom-left" class="h-6 w-6" />
-                  <span>Sort by</span>
-                </.button>
-              </.dropdown_menu_trigger>
-              <.dropdown_menu_content align="center">
-                <.menu>
-                  <.menu_item class="justify-center">
-                    <.link phx-click="sort_by_latest">
-                      Latest
-                    </.link>
-                  </.menu_item>
-                  <.menu_item class="justify-center">
-                    <.link phx-click="sort_by_popularity">
-                      Popular
-                    </.link>
-                  </.menu_item>
-                </.menu>
-              </.dropdown_menu_content>
-            </.dropdown_menu>
+            <%!-- <.dropdown_menu class="w-full sm:w-auto"> --%>
+            <%!--   <.dropdown_menu_trigger> --%>
+            <%!--     <.button --%>
+            <%!--       aria-haspopup="true" --%>
+            <%!--       variant="outline" --%>
+            <%!--       class="w-full sm:w-auto items-center gap-2 dark:text-white" --%>
+            <%!--     > --%>
+            <%!--       <.icon name="hero-bars-3-bottom-left" class="h-6 w-6" /> --%>
+            <%!--       <span>Sort by</span> --%>
+            <%!--     </.button> --%>
+            <%!--   </.dropdown_menu_trigger> --%>
+            <%!--   <.dropdown_menu_content align="center"> --%>
+            <%!--     <.menu> --%>
+            <%!--       <.menu_item class="justify-center"> --%>
+            <%!--         <.link phx-click="sort_by_latest"> --%>
+            <%!--           Latest --%>
+            <%!--         </.link> --%>
+            <%!--       </.menu_item> --%>
+            <%!--       <.menu_item class="justify-center"> --%>
+            <%!--         <.link phx-click="sort_by_popularity"> --%>
+            <%!--           Popular --%>
+            <%!--         </.link> --%>
+            <%!--       </.menu_item> --%>
+            <%!--     </.menu> --%>
+            <%!--   </.dropdown_menu_content> --%>
+            <%!-- </.dropdown_menu> --%>
           </div>
           <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
             <.link
