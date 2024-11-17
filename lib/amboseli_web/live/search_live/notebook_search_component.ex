@@ -52,6 +52,7 @@ defmodule AmboseliWeb.NoteSearchLive.SearchComponent do
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:notebooks, [])
      |> assign_form()}
   end
 

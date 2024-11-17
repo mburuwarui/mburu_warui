@@ -82,7 +82,7 @@ defmodule AmboseliWeb.AppLive.Index do
             </.link>
             <div class="w-full sm:w-auto">
               <.button
-                phx-click="open_search"
+                phx-click={show_modal("app-search")}
                 class="w-full sm:w-auto text-gray-500 bg-white hover:ring-gray-500 hover:text-white dark:text-zinc-900 dark:hover:text-zinc-700 ring-gray-300 items-center gap-10 rounded-md px-3 text-sm ring-1 transition focus:[&:not(:focus-visible)]:outline-none"
               >
                 <div class="flex items-center gap-2">
@@ -196,12 +196,7 @@ defmodule AmboseliWeb.AppLive.Index do
       />
     </.modal>
 
-    <.search_modal
-      :if={@show_search_modal}
-      id="search-notebook-modal"
-      show
-      on_cancel={JS.push("close_search")}
-    >
+    <.search_modal id="app-search" on_cancel={hide_modal("app-search")}>
       <.live_component
         module={AmboseliWeb.AppSearchLive.SearchComponent}
         id={:search}
@@ -301,30 +296,6 @@ defmodule AmboseliWeb.AppLive.Index do
      |> stream_insert(:apps, app, at: 0, reset: true)
      |> assign(:categories, categories)
      |> assign(:apps, apps)}
-  end
-
-  def handle_event("open_search", _params, socket) do
-    apps = socket.assigns.apps
-    current_category = socket.assigns.current_category
-
-    {:noreply,
-     socket
-     |> assign(:page_title, "Search")
-     |> stream(:apps, apps, reset: true)
-     |> assign(:current_category, current_category)
-     |> assign(:show_search_modal, true)}
-  end
-
-  def handle_event("close_search", _params, socket) do
-    apps = socket.assigns.apps
-    current_category = socket.assigns.current_category
-
-    {:noreply,
-     socket
-     |> assign(:page_title, "Listing Apps")
-     |> stream(:apps, apps, reset: true)
-     |> assign(:current_category, current_category)
-     |> assign(:show_search_modal, false)}
   end
 
   @impl true

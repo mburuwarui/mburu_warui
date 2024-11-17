@@ -224,6 +224,7 @@ defmodule AmboseliWeb.NotebookLive.Show do
     {:ok,
      socket
      |> assign(:profiles, profiles)
+     |> assign(:show_sign_modal, false)
      |> stream(:comments, [])}
   end
 

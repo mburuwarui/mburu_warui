@@ -79,17 +79,18 @@ defmodule AmboseliWeb.NotebookLive.Index do
                 <.icon name="hero-pencil" class="mr-2 h-5 w-5" /> New Notebook
               </.button>
             </.link>
-            <.link patch={~p"/search"} class="w-full sm:w-auto">
-              <.button class="w-full sm:w-auto text-gray-500 bg-white hover:ring-gray-500 hover:text-white dark:text-zinc-900 dark:hover:text-zinc-700 ring-gray-300 items-center gap-10 rounded-md px-3 text-sm ring-1 transition focus:[&:not(:focus-visible)]:outline-none">
-                <div class="flex items-center gap-2">
-                  <Lucideicons.search class="h-4 w-4" />
-                  <span class="flex-grow text-left">Find notebooks</span>
-                </div>
-                <kbd class="hidden sm:inline-flex text-3xs opacity-80">
-                  <kbd class="font-sans">⌘</kbd><kbd class="font-sans">K</kbd>
-                </kbd>
-              </.button>
-            </.link>
+            <.button
+              phx-click={show_modal("notebook-search")}
+              class="w-full sm:w-auto text-gray-500 bg-white hover:ring-gray-500 hover:text-white dark:text-zinc-900 dark:hover:text-zinc-700 ring-gray-300 items-center gap-10 rounded-md px-3 text-sm ring-1 transition focus:[&:not(:focus-visible)]:outline-none"
+            >
+              <div class="flex items-center gap-2">
+                <Lucideicons.search class="h-4 w-4" />
+                <span class="flex-grow text-left">Find notebooks</span>
+              </div>
+              <kbd class="hidden sm:inline-flex text-3xs opacity-80">
+                <kbd class="font-sans">⌘</kbd><kbd class="font-sans">K</kbd>
+              </kbd>
+            </.button>
           </div>
         </div>
       </.header>
@@ -256,12 +257,7 @@ defmodule AmboseliWeb.NotebookLive.Index do
       />
     </.modal>
 
-    <.search_modal
-      :if={@live_action == :search}
-      id="search-notebook-modal"
-      show
-      on_cancel={JS.patch(@patch)}
-    >
+    <.search_modal id="notebook-search" on_cancel={hide_modal("notebook-search")}>
       <.live_component
         module={AmboseliWeb.NoteSearchLive.SearchComponent}
         id={:search}
@@ -354,15 +350,6 @@ defmodule AmboseliWeb.NotebookLive.Index do
     |> assign(:current_category, nil)
     |> assign(:notebooks, notebooks)
     |> stream(:notebooks, notebooks, reset: true)
-  end
-
-  defp apply_action(socket, :search, _params) do
-    patch = apply_patch(socket)
-
-    socket
-    |> assign(:page_title, "Search")
-    |> assign(:notebooks, nil)
-    |> assign(:patch, patch)
   end
 
   defp apply_action(socket, :filter_by_category, %{"category" => category_id}) do
