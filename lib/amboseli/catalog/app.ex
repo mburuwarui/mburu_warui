@@ -75,7 +75,7 @@ defmodule Amboseli.Catalog.App do
     end
 
     read :list_public do
-      prepare build(sort: [updated_at: :desc], filter: expr(visibility == :public))
+      prepare build(sort: [inserted_at: :desc], filter: expr(visibility == :public))
     end
 
     read :search_apps do

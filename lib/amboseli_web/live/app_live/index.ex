@@ -98,7 +98,11 @@ defmodule AmboseliWeb.AppLive.Index do
         </div>
       </.header>
 
-      <div class="grid grid-cols-1 gap-10 mt-4 md:grid-cols-2 lg:grid-cols-3">
+      <div
+        class="grid grid-cols-1 gap-10 mt-4 md:grid-cols-2 lg:grid-cols-3"
+        phx-update="stream"
+        id="apps"
+      >
         <div
           :for={{id, app} <- @streams.apps}
           id={id}
@@ -265,7 +269,7 @@ defmodule AmboseliWeb.AppLive.Index do
     |> assign(:app, nil)
     |> assign(:current_category, nil)
     |> assign(:apps, apps)
-    |> stream(:apps, apps, reset: true)
+    |> stream(:apps, apps)
   end
 
   defp apply_action(socket, :filter_by_category, %{"category" => category_id}) do
