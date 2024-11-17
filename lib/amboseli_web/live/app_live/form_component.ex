@@ -1,56 +1,55 @@
-defmodule AmboseliWeb.AppLive.SearchComponent do
-  require Ash.Query
+defmodule AmboseliWeb.AppLive.FormComponent do
   use AmboseliWeb, :live_component
-
-  import Ecto.Query, warn: false
 
   @impl true
   def render(assigns) do
     ~H"""
     <div>
-      <.simple_search
-        for={@form}
-        id="searchbox_container"
-        phx-change="search"
-        phx-target={@myself}
-        phx-debounce="300"
-        phx-hook="SearchBar"
-        phx-submit="search-submit"
-      >
-        <.input
-          field={@form[:query]}
-          type="search"
-          id="search-input"
-          placeholder="Search for apps"
-          autofocus="true"
-          class="w-full"
-          tabindex="0"
-        />
-        <div id="search-results">
-          <%= if @apps && !Enum.empty?(@apps) do %>
-            <div class="shadow-none rounded-none border-none">
-              <%= for app <- @apps do %>
-                <.link
-                  navigate={~p"/apps/#{app}"}
-                  class="block focus:outline-none focus:bg-slate-100 focus:text-sky-800 bg-none dark:focus:text-sky-200 dark:focus:bg-zinc-700 dark:text-white text-sm rounded-md"
-                  tabindex="0"
-                >
-                  <.card_content class="flex flex-row my-2 gap-2 space-x-2 rounded-md px-4 py-2 bg-zinc-100 hover:bg-zinc-600 hover:text-white items-center dark:bg-zinc-600 dark:hover:bg-zinc-700">
-                    <img src={app.picture} class="w-10 h-10 rounded-md object-cover" />
-                    <%= app.title %>
-                  </.card_content>
-                </.link>
-              <% end %>
-            </div>
-          <% end %>
+      <.header>
+        <%= @title %>
+        <:subtitle>Use this form to manage app records in your database.</:subtitle>
+      </.header>
 
-          <%= if @current_query != "" && @searched && Enum.empty?(@apps) do %>
-            <div class="flex flex-row my-2 gap-2 space-x-2 rounded-md px-4 py-2 bg-zinc-100 dark:bg-zinc-600 dark:text-white text-sm items-center">
-              No results found for "<%= @current_query %>"
+      <.simple_form
+        for={@form}
+        id="app-form"
+        phx-target={@myself}
+        phx-change="validate"
+        phx-submit="save"
+      >
+        <.input field={@form[:title]} type="text" label="Title" />
+        <.input field={@form[:description]} type="text" label="Description" />
+        <.input field={@form[:picture]} type="text" label="Picture" />
+        <.input field={@form[:link]} type="text" label="Link" />
+        <.input
+          field={@form[:visibility]}
+          type="select"
+          options={[:public, :private]}
+          label="Visibility"
+        />
+
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-zinc-700 dark:text-zinc-200">Categories</label>
+          <%= for category <- @available_categories do %>
+            <div class="flex items-center">
+              <.input
+                field={@form[:categories]}
+                type="checkbox"
+                id={"app-categories-#{category.name}"}
+                checked={category.name in @selected_categories}
+                label={category.name}
+                phx-click="toggle_category"
+                phx-value-name={category.name}
+                phx-target={@myself}
+              />
             </div>
           <% end %>
         </div>
-      </.simple_search>
+
+        <:actions>
+          <.button phx-disable-with="Saving...">Save App</.button>
+        </:actions>
+      </.simple_form>
     </div>
     """
   end
@@ -60,92 +59,101 @@ defmodule AmboseliWeb.AppLive.SearchComponent do
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:apps, [])
-     |> assign(:searched, false)
-     |> assign(:current_query, "")
+     |> assign(:available_categories, Amboseli.Catalog.Category.list_all!())
+     |> assign(:selected_categories, get_selected_categories(assigns.app))
      |> assign_form()}
   end
 
   @impl true
-  def handle_event("search", %{"search" => %{"query" => ""}}, socket) do
-    {:noreply,
-     socket
-     |> assign(:apps, [])
-     |> assign(:searched, false)
-     |> assign(:current_query, "")}
-  end
+  def handle_event("toggle_category", %{"name" => category_name}, socket) do
+    selected_categories =
+      if category_name in socket.assigns.selected_categories do
+        List.delete(socket.assigns.selected_categories, category_name)
+      else
+        [category_name | socket.assigns.selected_categories]
+      end
 
-  @impl true
-  def handle_event("search", %{"search" => %{"query" => query}}, socket) do
-    if String.trim(query) == "" do
-      {:noreply,
-       socket
-       |> assign(:apps, [])
-       |> assign(:searched, false)
-       |> assign(:current_query, "")}
-    else
-      search_query = "%#{query}%"
-
-      apps =
-        Amboseli.Catalog.App
-        |> order_by(asc: :title)
-        |> where([p], ilike(p.title, ^search_query))
-        |> limit(5)
-        |> Amboseli.Repo.all()
-        |> Ash.load!([
-          :categories_join_assoc,
-          :categories,
-          :user_email,
-          :user
-        ])
-
-      {:noreply,
-       socket
-       |> assign(:apps, apps)
-       |> assign(:searched, true)
-       |> assign(:current_query, query)}
-    end
-  end
-
-  @impl true
-  def handle_event("search-submit", %{"search" => %{"query" => query}}, socket) do
-    if String.trim(query) == "" do
-      {:noreply,
-       socket
-       |> assign(:apps, [])
-       |> assign(:searched, false)
-       |> assign(:current_query, "")}
-    else
-      search_query = "%#{query}%"
-
-      apps =
-        Amboseli.Catalog.App
-        |> order_by(asc: :title)
-        |> where([p], ilike(p.title, ^search_query))
-        |> limit(5)
-        |> Amboseli.Repo.all()
-        |> Ash.load!([
-          :categories_join_assoc,
-          :categories,
-          :user_email,
-          :user
-        ])
-
-      {:noreply,
-       socket
-       |> assign(:apps, apps)
-       |> assign(:searched, true)
-       |> assign(:current_query, query)}
-    end
-  end
-
-  defp assign_form(socket) do
     form =
-      AshPhoenix.Form.for_read(Amboseli.Catalog.App, :search_apps,
-        as: "search",
-        actor: socket.assigns.current_user
-      )
+      AshPhoenix.Form.update_options(socket.assigns.form, fn options ->
+        Keyword.put(options, :selected_categories, selected_categories)
+      end)
+
+    {:noreply, assign(socket, selected_categories: selected_categories, form: form)}
+  end
+
+  @impl true
+  def handle_event("validate", %{"app" => app_params}, socket) do
+    categories =
+      case Map.get(app_params, "categories") do
+        nil -> []
+        categories when is_list(categories) -> categories
+        categories when is_binary(categories) -> [categories]
+        _ -> []
+      end
+      |> Enum.map(fn category ->
+        if is_binary(category) do
+          %{name: category}
+        else
+          category
+        end
+      end)
+
+    app_params =
+      app_params
+      |> Map.put("categories", categories)
+
+    form =
+      socket.assigns.form
+      |> AshPhoenix.Form.validate(app_params)
+      |> AshPhoenix.Form.update_options(fn options ->
+        Keyword.put(options, :selected_categories, socket.assigns.selected_categories)
+      end)
+
+    {:noreply, assign(socket, form: form)}
+  end
+
+  def handle_event("save", %{"app" => params}, socket) do
+    app_params =
+      params
+      |> Map.put("categories", Enum.map(socket.assigns.selected_categories, &%{"name" => &1}))
+
+    case AshPhoenix.Form.submit(socket.assigns.form, params: app_params) do
+      {:ok, app} ->
+        notify_parent({:saved, app})
+
+        socket =
+          socket
+          |> put_flash(:info, "App #{socket.assigns.form.source.type}d successfully")
+          |> push_patch(to: socket.assigns.patch)
+
+        {:noreply, socket}
+
+      {:error, form} ->
+        {:noreply, assign(socket, form: form)}
+    end
+  end
+
+  defp notify_parent(msg), do: send(self(), {__MODULE__, msg})
+
+  defp assign_form(%{assigns: %{app: app}} = socket) do
+    form =
+      if app do
+        AshPhoenix.Form.for_update(app, :update, as: "app", actor: socket.assigns.current_user)
+      else
+        AshPhoenix.Form.for_create(Amboseli.Catalog.App, :create,
+          as: "app",
+          actor: socket.assigns.current_user
+        )
+      end
 
     assign(socket, form: to_form(form))
+  end
+
+  defp get_selected_categories(nil), do: []
+  defp get_selected_categories(%{categories: %Ash.NotLoaded{}}), do: []
+
+  defp get_selected_categories(notebook) do
+    notebook.categories
+    |> Enum.map(& &1.name)
   end
 end
