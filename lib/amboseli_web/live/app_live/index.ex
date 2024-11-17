@@ -198,7 +198,7 @@ defmodule AmboseliWeb.AppLive.Index do
 
     <.search_modal id="app-search" on_cancel={hide_modal("app-search")}>
       <.live_component
-        module={AmboseliWeb.AppSearchLive.SearchComponent}
+        module={AmboseliWeb.AppLive.SearchComponent}
         id={:search}
         title={@page_title}
         current_user={@current_user}

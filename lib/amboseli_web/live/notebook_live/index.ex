@@ -259,7 +259,7 @@ defmodule AmboseliWeb.NotebookLive.Index do
 
     <.search_modal id="notebook-search" on_cancel={hide_modal("notebook-search")}>
       <.live_component
-        module={AmboseliWeb.NoteSearchLive.SearchComponent}
+        module={AmboseliWeb.NotebookLive.SearchComponent}
         id={:search}
         title={@page_title}
         current_user={@current_user}

@@ -22,29 +22,25 @@ SearchBar = {
       if (event.key !== "ArrowUp" && event.key !== "ArrowDown") {
         return;
       }
-
-      const focusElemnt = document.querySelector(":focus") as HTMLElement;
-
-      if (!focusElemnt) {
+      const focusElement = document.querySelector(":focus") as HTMLElement;
+      if (!focusElement) {
         return;
       }
-
-      if (!searchBarContainer.contains(focusElemnt)) {
+      if (!searchBarContainer.contains(focusElement)) {
         return;
       }
-
       event.preventDefault();
 
+      // Updated selector to match your template structure
       const tabElements = document.querySelectorAll(
-        "#search-input, #searchbox__results_list a",
+        "#search-input, #search-results a",
       ) as NodeListOf<HTMLElement>;
-      const focusIndex = Array.from(tabElements).indexOf(focusElemnt);
+      const focusIndex = Array.from(tabElements).indexOf(focusElement);
       const tabElementsCount = tabElements.length - 1;
 
       if (event.key === "ArrowUp") {
         tabElements[focusIndex > 0 ? focusIndex - 1 : tabElementsCount].focus();
       }
-
       if (event.key === "ArrowDown") {
         tabElements[focusIndex < tabElementsCount ? focusIndex + 1 : 0].focus();
       }
