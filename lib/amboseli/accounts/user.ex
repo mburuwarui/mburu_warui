@@ -33,6 +33,14 @@ defmodule Amboseli.Accounts.User do
         confirm_on_update? false
         sender Amboseli.Accounts.User.Senders.SendNewUserConfirmationEmail
       end
+
+      confirmation :confirm_change do
+        monitor_fields [:email]
+        confirm_on_create? false
+        confirm_on_update? true
+        confirm_action_name :confirm_change
+        sender Amboseli.Accounts.User.Senders.SendEmailChangeConfirmationEmail
+      end
     end
   end
 

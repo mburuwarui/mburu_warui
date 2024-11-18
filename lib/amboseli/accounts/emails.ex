@@ -41,17 +41,39 @@ defmodule Amboseli.Accounts.Emails do
       end
 
     deliver(email, "Confirm your email address", """
+      <html>
+        <p>
+          Hi #{email},
+        </p>
+
+        <p>
+          Someone has tried to register a new account using this email address.
+          If it was you, then please click the link below to confirm your identity. If you did not initiate this request then please ignore this email.
+        </p>
+
+        <p>
+          <a href="#{url}">Click here to confirm your account</a>
+        </p>
+      <html>
+    """)
+  end
+
+  def deliver_email_change_confirmation_instructions(user, url) do
+    if !url do
+      raise "Cannot deliver confirmation instructions without a url"
+    end
+
+    deliver(user.email, "Confirm your new email address", """
       <p>
-        Hi #{email},
+        Hi #{user.email},
       </p>
 
       <p>
-        Someone has tried to register a new account using this email address.
-        If it was you, then please click the link below to confirm your identity. If you did not initiate this request then please ignore this email.
+        You recently changed your email address. Please confirm it.
       </p>
 
       <p>
-        <a href="#{url}">Click here to confirm your account</a>
+        <a href="#{url}">Click here to confirm your new email address</a>
       </p>
     """)
   end
