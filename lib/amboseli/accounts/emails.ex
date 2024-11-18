@@ -5,6 +5,28 @@ defmodule Amboseli.Accounts.Emails do
 
   import Swoosh.Email
 
+  def deliver_reset_password_instructions(user, url) do
+    if !url do
+      raise "Cannot deliver reset instructions without a url"
+    end
+
+    deliver(user.email, "Reset Your Password", """
+    <html>
+      <p>
+        Hi #{user.email},
+      </p>
+
+      <p>
+        <a href="#{url}">Click here</a> to reset your password.
+      </p>
+
+      <p>
+        If you didn't request this change, please ignore this.
+      </p>
+    <html>
+    """)
+  end
+
   def deliver_magic_link(user, url) do
     if !url do
       raise "Cannot deliver reset instructions without a url"

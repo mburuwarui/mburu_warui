@@ -16,6 +16,10 @@ defmodule Amboseli.Accounts.User do
     strategies do
       password :password do
         identity_field :email
+
+        resettable do
+          sender Amboseli.Accounts.User.Senders.SendPasswordResetEmail
+        end
       end
 
       magic_link do
