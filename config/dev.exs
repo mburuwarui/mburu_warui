@@ -88,5 +88,8 @@ config :swoosh, :api_client, false
 # Display debug information on all PubSub events 
 config :ash, :pub_sub, debug?: true
 
+# Display debug information on authentication failures
+config :ash_authentication, debug_authentication_failures?: true
+
 # Path to install SaladUI components
 config :salad_ui, components_path: Path.join(File.cwd!(), "lib/amboseli_web/components")
