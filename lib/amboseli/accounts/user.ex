@@ -54,8 +54,6 @@ defmodule Amboseli.Accounts.User do
   end
 
   actions do
-    defaults [:read, :destroy, create: [], update: [:email, :role]]
-
     read :get_by_subject do
       description "Get a user by the subject claim in a JWT"
       argument :subject, :string, allow_nil?: false
@@ -199,6 +197,16 @@ defmodule Amboseli.Accounts.User do
 
       # Generates an authentication token for the user
       change AshAuthentication.GenerateTokenChange
+    end
+
+    update :user_role do
+      description "Update the user role"
+      accept [:role]
+    end
+
+    update :user_email do
+      description "Update the user email"
+      accept [:email]
     end
   end
 
